@@ -277,14 +277,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 7701817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d283eae5c8868f64ba652e47408ec60b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5871d181a9133b24387e81ca4d2b0a6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 4
-  jumpHeight: 100
+  maxMoveSpeed: 20
+  jumpHeight: 8
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  acceleration: 12
+  groundLinearDrag: 3
+  airLinearDrag: 1
+  maxJumpHeight: 10
 --- !u!1 &99875215
 GameObject:
   m_ObjectHideFlags: 0
