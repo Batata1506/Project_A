@@ -2,6 +2,7 @@ using JetBrains.Rider.Unity.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UnityEditor;
 using UnityEngine;
 
 public class BasicPlayerMovement : MonoBehaviour
@@ -86,6 +87,13 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             body.freezeRotation = false;
         }
+
+        
+
+        if (horiDirection == 0 && IsGrounded())
+        {
+            body.velocity = new Vector2(0, body.velocity.y);
+        }
         
     }
 
@@ -98,14 +106,7 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             body.velocity = new Vector2(Mathf.Sign(body.velocity.x * _maxSpeed), body.velocity.y);
         }
-          
-        /*
-        if (horiDirection == 0 && IsGrounded())
-        {
-            body.AddForce(_move * movementSpeed * Time.deltaTime, ForceMode2D.Force);
-        }
-        else Move();
-        */
+       
     }
    
     private void Jump()
