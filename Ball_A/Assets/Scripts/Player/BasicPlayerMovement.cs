@@ -95,13 +95,17 @@ public class BasicPlayerMovement : MonoBehaviour
     {
          body.AddForce(_move*movementSpeed*Time.deltaTime, ForceMode2D.Impulse);
         if(Mathf.Abs(body.velocity.x) > _maxSpeed)
-            body.velocity = new Vector2(Mathf.Sign(body.velocity.x* _maxSpeed), body.velocity.y  );
-
+        {
+            body.velocity = new Vector2(Mathf.Sign(body.velocity.x * _maxSpeed), body.velocity.y);
+        }
+          
+        /*
         if (horiDirection == 0 && IsGrounded())
         {
             body.AddForce(_move * movementSpeed * Time.deltaTime, ForceMode2D.Force);
         }
         else Move();
+        */
     }
    
     private void Jump()
