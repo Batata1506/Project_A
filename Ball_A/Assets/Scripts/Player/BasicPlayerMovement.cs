@@ -7,15 +7,16 @@ using UnityEngine;
 
 public class BasicPlayerMovement : MonoBehaviour
 {
-    private CircleCollider2D circleCollider;
-    private Rigidbody2D body;
-    private Vector2 _move;
     [SerializeField] private float movementSpeed = 200f;
     [SerializeField] private float jumpHeight = 100f;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField]  private float _maxSpeed =  50f;
+    [SerializeField] private float _maxSpeed = 50f;
+    private CircleCollider2D circleCollider;
+    private Rigidbody2D body;
+    private Vector2 _move;
     private Animator anim;
-    private float horiDirection;
+    private float Xpos;
+    private float coolDown = Time.deltaTime;
  
 
     // Awake is called when the script instance is being loaded
@@ -35,65 +36,61 @@ public class BasicPlayerMovement : MonoBehaviour
     // Update is called every frame, if the MonoBehaviour is enabled
     private void Update()
     {
-        _move = new Vector2(Input.GetAxisRaw("Horizontal"), 0);
-        horiDirection = Input.GetAxis("Horizontal");
-        if (horiDirection > 0.1f)
+        Xpos = Input.GetAxis("Horizontal");
+        _move = new Vector2(Xpos, 0);
+        if (Xpos > 0.1f)
         {
             transform.localScale = new Vector3(-0.15f, 0.15f, 0.15f); ;
         }
-        else if (horiDirection < -0.1f)
+        else if (Xpos < -0.1f)
         {
             transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
         }
+
+        // Set animator paras 
+        anim.SetBool("grounded", isGrounded());
+        anim.SetBool("run", body.velocity.x != 0);
     }
 
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
     private void FixedUpdate()
     {
-
-        // stops the ball when no keys are pressed (disables momentum)
-     
         Move();
-        if (body.velocity.x > 0f || body.velocity.x < 0f)
-            anim.SetBool("run", true);
-        else anim.SetBool("run", false);
-        if(Input.GetKey(KeyCode.Space) && IsGrounded())
+       
+
+        if (Input.GetKey(KeyCode.Space) && isGrounded())
         {
             Jump();
-            anim.SetTrigger("jump");
+           
 
             // double jump (in the works)
-          /*  if (Input.GetKey(KeyCode.F) )
-        {
-            body.gravityScale = 5f;
-         
-            if (IsGrounded())
-            {
-                body.gravityScale = 1f;
-                Jump();
-                anim.SetTrigger("jump");
-            }
-          */
+            /*  if (Input.GetKey(KeyCode.F) )
+          {
+              body.gravityScale = 5f;
+
+              if (IsGrounded())
+              {
+                  body.gravityScale = 1f;
+                  Jump();
+                  anim.SetTrigger("jump");
+              }
+            */
         }
            
        
         // jump rotaion 
-        if ( IsGrounded() == false)
+        if (isGrounded() == false)
         {
             body.rotation = 0;
             body.freezeRotation = true;
         }
-        else if(body.velocity.y == 0 || IsGrounded())
+        else if(body.velocity.y == 0 || isGrounded())
         {
             body.freezeRotation = false;
         }
 
         
-
-        if (horiDirection == 0 && IsGrounded())
-        {
-            body.velocity = new Vector2(0, body.velocity.y);
-        }
+        
         
     }
 
@@ -113,11 +110,17 @@ public class BasicPlayerMovement : MonoBehaviour
     private void Jump()
     {
         body.AddForce(new Vector2(body.velocity.x, jumpHeight));
+        anim.SetTrigger("jump");
     }
 
-    private bool IsGrounded()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center, circleCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
+     
+    }
+
+    private bool isGrounded()
+    {
+        RaycastHit2D raycast = Physics2D.Raycast(circleCollider.bounds.center,Vector2.down,1f, groundLayer);
         return raycast.collider != null;
     }
 }
