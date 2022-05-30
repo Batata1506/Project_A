@@ -12,10 +12,10 @@ public class BasicPlayerMovement : MonoBehaviour
     [SerializeField] private float movementSpeed = 200f;
     [SerializeField] private float jumpHeight = 100f;
     [SerializeField] private LayerMask groundLayer;
-    private float _maxSpeed =  220f;
+    [SerializeField]  private float _maxSpeed =  50f;
     private Animator anim;
     private float horiDirection;
-    private bool  direction ;
+ 
 
     // Awake is called when the script instance is being loaded
     private void Awake()
@@ -31,17 +31,38 @@ public class BasicPlayerMovement : MonoBehaviour
     {
 
     }
+    // Update is called every frame, if the MonoBehaviour is enabled
+    private void Update()
+    {
+        _move = new Vector2(Input.GetAxisRaw("Horizontal"), 0);
+        horiDirection = Input.GetAxis("Horizontal");
+        if (horiDirection > 0.1f)
+        {
+            transform.localScale = new Vector3(-0.15f, 0.15f, 0.15f); ;
+        }
+        else if (horiDirection < -0.1f)
+        {
+            transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+        }
+    }
 
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
     private void FixedUpdate()
     {
+
+        // stops the ball when no keys are pressed (disables momentum)
+     
         Move();
+        if (body.velocity.x > 0f || body.velocity.x < 0f)
+            anim.SetBool("run", true);
+        else anim.SetBool("run", false);
         if(Input.GetKey(KeyCode.Space) && IsGrounded())
         {
             Jump();
             anim.SetTrigger("jump");
 
-             if (Input.GetKey(KeyCode.F) )
+            // double jump (in the works)
+          /*  if (Input.GetKey(KeyCode.F) )
         {
             body.gravityScale = 5f;
          
@@ -51,11 +72,11 @@ public class BasicPlayerMovement : MonoBehaviour
                 Jump();
                 anim.SetTrigger("jump");
             }
-          
+          */
         }
            
-        }
-
+       
+        // jump rotaion 
         if ( IsGrounded() == false)
         {
             body.rotation = 0;
@@ -65,34 +86,22 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             body.freezeRotation = false;
         }
-
-      
+        
     }
 
-    // Update is called every frame, if the MonoBehaviour is enabled
-    private void Update()
-    {
-        _move = new Vector2(Input.GetAxisRaw("Horizontal"), 0);
-        horiDirection = Input.GetAxis("Horizontal");
-        direction = (body.velocity.x > 0f && horiDirection < 0f) || (body.velocity.x < 0f && horiDirection > 0f);
-
-        if (Mathf.Abs(horiDirection) < 0.4f || direction)
-        {
-            anim.SetBool("run", true);
-        }
-        else anim.SetBool("run", false);
-
-
-    }
+    
 
     private void Move()
     {
-         body.AddForce(_move*movementSpeed*Time.deltaTime, ForceMode2D.Force);
+         body.AddForce(_move*movementSpeed*Time.deltaTime, ForceMode2D.Impulse);
         if(Mathf.Abs(body.velocity.x) > _maxSpeed)
             body.velocity = new Vector2(Mathf.Sign(body.velocity.x* _maxSpeed), body.velocity.y  );
-        
 
-       // body.velocity = new Vector2(_move * movementSpeed * Time.deltaTime, body.velocity.y);
+        if (horiDirection == 0 && IsGrounded())
+        {
+            body.AddForce(_move * movementSpeed * Time.deltaTime, ForceMode2D.Force);
+        }
+        else Move();
     }
    
     private void Jump()

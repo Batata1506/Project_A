@@ -280,11 +280,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d283eae5c8868f64ba652e47408ec60b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 4
-  jumpHeight: 100
+  movementSpeed: 10
+  jumpHeight: 150
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  _maxSpeed: 50
 --- !u!1 &99875215
 GameObject:
   m_ObjectHideFlags: 0
