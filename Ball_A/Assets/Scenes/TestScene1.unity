@@ -286,6 +286,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _maxSpeed: 50
+  jumpCooldown: 0.25
 --- !u!1 &99875215
 GameObject:
   m_ObjectHideFlags: 0

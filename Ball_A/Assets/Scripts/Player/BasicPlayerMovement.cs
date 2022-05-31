@@ -11,12 +11,14 @@ public class BasicPlayerMovement : MonoBehaviour
     [SerializeField] private float jumpHeight = 100f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float _maxSpeed = 50f;
+    [SerializeField] private float jumpCooldown ;
     private CircleCollider2D circleCollider;
     private Rigidbody2D body;
     private Vector2 _move;
     private Animator anim;
     private float Xpos;
-    private float coolDown = Time.deltaTime;
+    private float coolDown = Mathf.Infinity;
+
  
 
     // Awake is called when the script instance is being loaded
@@ -56,42 +58,26 @@ public class BasicPlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-       
 
-        if (Input.GetKey(KeyCode.Space) && isGrounded())
+        coolDown += Time.deltaTime;
+        if (Input.GetKey(KeyCode.Space) && coolDown > jumpCooldown)
         {
             Jump();
-           
-
-            // double jump (in the works)
-            /*  if (Input.GetKey(KeyCode.F) )
-          {
-              body.gravityScale = 5f;
-
-              if (IsGrounded())
-              {
-                  body.gravityScale = 1f;
-                  Jump();
-                  anim.SetTrigger("jump");
-              }
-            */
         }
-           
-       
+
+
         // jump rotaion 
-        if (isGrounded() == false)
+        if (!isGrounded())
         {
             body.rotation = 0;
             body.freezeRotation = true;
+            body.drag = 1;
         }
-        else if(body.velocity.y == 0 || isGrounded())
+        else
         {
             body.freezeRotation = false;
+            body.drag = 2;
         }
-
-        
-        
-        
     }
 
     
@@ -109,18 +95,21 @@ public class BasicPlayerMovement : MonoBehaviour
    
     private void Jump()
     {
-        body.AddForce(new Vector2(body.velocity.x, jumpHeight));
-        anim.SetTrigger("jump");
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-     
+      
+        if (isGrounded())
+        {
+            body.AddForce(new Vector2(body.velocity.x, jumpHeight));
+            anim.SetTrigger("jump");
+            
+        }
+        coolDown = 0;
     }
 
     private bool isGrounded()
     {
-        RaycastHit2D raycast = Physics2D.Raycast(circleCollider.bounds.center,Vector2.down,0.7f, groundLayer);
+        RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center,circleCollider.bounds.size,0,Vector2.down,0.03f, groundLayer);
         return raycast.collider != null;
     }
+
+   
 }
