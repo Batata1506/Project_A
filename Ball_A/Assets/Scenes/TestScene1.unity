@@ -281,12 +281,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 25
-  jumpHeight: 1000
+  jumpHeight: 20
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   _maxSpeed: 50
-  jumpCooldown: 0.25
+  jumpCooldown: 0.5
 --- !u!1 &99875215
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,8 +391,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99875215}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.4875238, y: -7.3161936, z: -0.03558485}
-  m_LocalScale: {x: 9.998438, y: 4.9555855, z: 1}
+  m_LocalPosition: {x: -3.1414, y: -7.3161936, z: -0.03558485}
+  m_LocalScale: {x: 21.256678, y: 4.9555855, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1041657805}
@@ -520,7 +520,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 307457923}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -20.607975, y: -9.631093, z: -0.03558485}
+  m_LocalPosition: {x: -28.75, y: 1.63, z: -0.03558485}
   m_LocalScale: {x: 27.19662, y: 8.000318, z: 1.7774}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -731,7 +731,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1041657805}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -860,7 +860,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502811989}
   m_LocalRotation: {x: -0, y: -0, z: -0.058235794, w: 0.99830294}
-  m_LocalPosition: {x: -5.394376, y: -7.1728935, z: -0.03558485}
+  m_LocalPosition: {x: -27.13, y: -8.16, z: -0.03558485}
   m_LocalScale: {x: 6.0877743, y: 5.40455, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

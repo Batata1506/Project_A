@@ -5,7 +5,7 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
-public class BasicPlayerMovement : MonoBehaviour
+public class CoreMovement : MonoBehaviour
 {
     [SerializeField] private float movementSpeed = 200f;
     [SerializeField] private float jumpHeight = 100f;
@@ -40,6 +40,7 @@ public class BasicPlayerMovement : MonoBehaviour
     {
         Xpos = Input.GetAxis("Horizontal");
         _move = new Vector2(Xpos, 0);
+       
         if (Xpos > 0.1f)
         {
             transform.localScale = new Vector3(-0.15f, 0.15f, 0.15f); ;
@@ -57,26 +58,23 @@ public class BasicPlayerMovement : MonoBehaviour
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
     private void FixedUpdate()
     {
-        Move();
-
-        coolDown += Time.deltaTime;
         if (Input.GetKey(KeyCode.Space) && coolDown > jumpCooldown)
         {
             Jump();
         }
-
-
+        coolDown += Time.deltaTime;
+        Move();
         // jump rotaion 
-        if (!isGrounded())
+        if (isGrounded())
+        {
+            body.freezeRotation = false;
+            body.drag = 2;
+        }
+        else
         {
             body.rotation = 0;
             body.freezeRotation = true;
             body.drag = 1;
-        }
-        else
-        {
-            body.freezeRotation = false;
-            body.drag = 2;
         }
     }
 
@@ -98,7 +96,7 @@ public class BasicPlayerMovement : MonoBehaviour
       
         if (isGrounded())
         {
-            body.AddForce(new Vector2(body.velocity.x, jumpHeight));
+            body.velocity = new Vector2(body.velocity.x, jumpHeight);
             anim.SetTrigger("jump");
             
         }
@@ -107,7 +105,7 @@ public class BasicPlayerMovement : MonoBehaviour
 
     private bool isGrounded()
     {
-        RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center,circleCollider.bounds.size,0,Vector2.down,0.03f, groundLayer);
+        RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center,circleCollider.bounds.size,0,Vector2.down,0.01f, groundLayer);
         return raycast.collider != null;
     }
 
