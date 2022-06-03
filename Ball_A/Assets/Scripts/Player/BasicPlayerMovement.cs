@@ -98,7 +98,7 @@ public class BasicPlayerMovement : MonoBehaviour
       
         if (isGrounded())
         {
-            body.AddForce(new Vector2(body.velocity.x, jumpHeight));
+            body.velocity = new Vector2(body.velocity.x, jumpHeight);
             anim.SetTrigger("jump");
             
         }
