@@ -18,6 +18,7 @@ public class CoreMovement : MonoBehaviour
     private Animator anim;
     private float Xpos;
     private float coolDown = Mathf.Infinity;
+   
 
  
 
@@ -58,7 +59,7 @@ public class CoreMovement : MonoBehaviour
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
     private void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.Space) && coolDown > jumpCooldown)
+        if (Input.GetButton("Jump") && coolDown > jumpCooldown)
         {
             Jump();
         }
@@ -105,7 +106,7 @@ public class CoreMovement : MonoBehaviour
 
     private bool isGrounded()
     {
-        RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center,circleCollider.bounds.size,0,Vector2.down,0.01f, groundLayer);
+        RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center, circleCollider.bounds.size, 0f, Vector2.down, 0.01f, groundLayer);
         return raycast.collider != null;
     }
 
