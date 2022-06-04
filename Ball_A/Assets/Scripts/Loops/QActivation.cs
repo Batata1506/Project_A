@@ -22,9 +22,9 @@ public class QActivation : MonoBehaviour
                     Q2.isTrigger = true;
                     Q2.gameObject.layer = LayerMask.NameToLayer("Default");
                     Q3.isTrigger = false;
-                    Q3.gameObject.layer = LayerMask.NameToLayer("Ground");
+                    Q3.gameObject.layer = LayerMask.NameToLayer("ground");
                     Q4.isTrigger = false;
-                    Q4.gameObject.layer = LayerMask.NameToLayer("Ground");
+                    Q4.gameObject.layer = LayerMask.NameToLayer("ground");
 
                 sprite.sortingLayerName = "Foreground";
             }
@@ -32,9 +32,9 @@ public class QActivation : MonoBehaviour
                 else if (Q3.isTrigger == false && Q4.isTrigger == false)
                 {
                     Q1.isTrigger = false;
-                    Q1.gameObject.layer = LayerMask.NameToLayer("Ground");
+                    Q1.gameObject.layer = LayerMask.NameToLayer("ground");
                     Q2.isTrigger = false;
-                    Q2.gameObject.layer = LayerMask.NameToLayer("Ground");
+                    Q2.gameObject.layer = LayerMask.NameToLayer("ground");
                     Q3.isTrigger = true;
                     Q3.gameObject.layer = LayerMask.NameToLayer("Default");
                     Q4.isTrigger = true;
