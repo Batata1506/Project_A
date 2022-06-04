@@ -132,7 +132,7 @@ public class BasicPlayerMovement : MonoBehaviour
         if (hit)
         {
             slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            print(slopeAngle);
+            //print(slopeAngle);
             //bool onSlope = true;
         }
        // else
