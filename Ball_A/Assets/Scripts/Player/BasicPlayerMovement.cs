@@ -18,6 +18,8 @@ public class BasicPlayerMovement : MonoBehaviour
     private Animator anim;
     private float Xpos;
     private float coolDown = Mathf.Infinity;
+    [SerializeField] private float slopeAngle; // only serialized for debugging
+    [SerializeField] private float maxClimableAngle;
 
  
 
@@ -38,6 +40,8 @@ public class BasicPlayerMovement : MonoBehaviour
     // Update is called every frame, if the MonoBehaviour is enabled
     private void Update()
     {
+        Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0));
+        Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue);
         Xpos = Input.GetAxis("Horizontal");
         _move = new Vector2(Xpos, 0);
         if (Xpos > 0.1f)
@@ -52,6 +56,9 @@ public class BasicPlayerMovement : MonoBehaviour
         // Set animator paras 
         anim.SetBool("grounded", isGrounded());
         anim.SetBool("run", body.velocity.x != 0);
+
+        //Slopes
+        CalculateSlopeAngle();
     }
 
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
@@ -80,11 +87,14 @@ public class BasicPlayerMovement : MonoBehaviour
         }
     }
 
-    
+    private void MovingOnSlope()
+    {
+
+    }
 
     private void Move()
     {
-         body.AddForce(_move*movementSpeed*Time.deltaTime, ForceMode2D.Impulse);
+         body.AddForce(_move*movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
         if(Mathf.Abs(body.velocity.x) > _maxSpeed)
         {
             //Player caps at max speed
@@ -112,5 +122,14 @@ public class BasicPlayerMovement : MonoBehaviour
         return raycast.collider != null;
     }
 
-   
+    private void CalculateSlopeAngle()
+    {
+        //RaycastHit2D hit = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0), Vector2.down, 0.03f, groundLayer);
+        RaycastHit2D hit = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, 0.5f, groundLayer);
+        if (hit)
+        {
+            slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+            print(slopeAngle);
+        }
+    }
 }
