@@ -18,6 +18,8 @@ public class BasicPlayerMovement : MonoBehaviour
     private Animator anim;
     private float Xpos;
     private float coolDown = Mathf.Infinity;
+
+    [Header("Slopes")]
     [SerializeField] private float slopeAngle; // only serialized for debugging
     [SerializeField] private float maxClimableAngle;
 
@@ -40,8 +42,9 @@ public class BasicPlayerMovement : MonoBehaviour
     // Update is called every frame, if the MonoBehaviour is enabled
     private void Update()
     {
-        Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0));
-        Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue);
+        Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0)); //For slopes
+        Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue); //For slopes
+
         Xpos = Input.GetAxis("Horizontal");
         _move = new Vector2(Xpos, 0);
         if (Xpos > 0.1f)
@@ -74,7 +77,7 @@ public class BasicPlayerMovement : MonoBehaviour
 
 
         // jump rotaion 
-        if (!isGrounded())
+        if (!isGrounded()) // || onSlope = false
         {
             body.rotation = 0;
             body.freezeRotation = true;
@@ -125,11 +128,16 @@ public class BasicPlayerMovement : MonoBehaviour
     private void CalculateSlopeAngle()
     {
         //RaycastHit2D hit = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0), Vector2.down, 0.03f, groundLayer);
-        RaycastHit2D hit = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, 0.5f, groundLayer);
+        RaycastHit2D hit = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, 0.5f, groundLayer); //Change groundLayer to slopeLayer
         if (hit)
         {
             slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
             print(slopeAngle);
+            //bool onSlope = true;
         }
+       // else
+        //{
+          //  onSlope = false;
+        //}
     }
 }

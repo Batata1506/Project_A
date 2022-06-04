@@ -27,7 +27,7 @@ public class QActivation : MonoBehaviour
                     Q4.gameObject.layer = LayerMask.NameToLayer("Ground");
 
                 sprite.sortingLayerName = "Foreground";
-                }
+            }
 
                 else if (Q3.isTrigger == false && Q4.isTrigger == false)
                 {
