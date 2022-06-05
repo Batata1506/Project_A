@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JetBrains.Rider.Unity.Editor;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,19 +10,20 @@ using UnityEngine;
 public class CoreMovement : MonoBehaviour
 {
     [SerializeField] private float movementSpeed = 200f;
-    [SerializeField] private float jumpHeight = 100f;
+    [SerializeField] public float jumpHeight = 100f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float _maxSpeed = 50f;
     [SerializeField] private float jumpCooldown ;
     [SerializeField] private float bounceCooldown;
-    private CircleCollider2D circleCollider;
-    private Rigidbody2D body;
-    private Vector2 _move;
-    private Animator anim;
+    public CircleCollider2D circleCollider;
+    public Rigidbody2D body;
+    public Vector2 _move;
+    public Animator anim;
     private float Xpos;
     private float coolDown = Mathf.Infinity;
-    private float coolDown2 = Mathf.Infinity;
-    private bool bounce = true;
+    public BounceAbility bounceAbility;
+    
+
     
    
 
@@ -34,11 +36,9 @@ public class CoreMovement : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         circleCollider = GetComponent<CircleCollider2D>();
         anim = GetComponent<Animator>();
+      bounceAbility =FindObjectOfType<BounceAbility>();  
     }
-    private void Start()
-    {
-      
-    }
+  
 
     // Update is called every frame, if the MonoBehaviour is enabled
     private void Update()
@@ -74,15 +74,10 @@ public class CoreMovement : MonoBehaviour
         {
             Jump();
         }
-        if (coolDown2 > bounceCooldown)
-        {
-            Bounce();
-            coolDown2 = 0;
-        }
-           
+        bounceAbility.Bounce();
 
         coolDown += Time.deltaTime;
-        coolDown2 += Time.deltaTime;
+ 
         // jump rotaion 
         if (isGrounded())
         {
@@ -120,40 +115,13 @@ public class CoreMovement : MonoBehaviour
         coolDown = 0;
     }
 
-    private void Bounce()
-    {
-            if (bounce && Input.GetKey(KeyCode.Mouse0) && !isGrounded())
-            {
-             body.AddForce(new Vector2(body.velocity.x, 0), ForceMode2D.Force);
-            //body.velocity = new Vector2(body.velocity.x, body.velocity.y *0);
-                StartCoroutine(BounceDelay());
-                bounce = false;
+  
 
-            }
-
-            else
-            {
-                body.velocity = new Vector2(body.velocity.x, body.velocity.y);
-                bounce = true;
-            }
-
-    }
-
-    private bool isGrounded()
+    public  bool isGrounded()
     {
         RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center, circleCollider.bounds.size, 0f, Vector2.down, 0.01f, groundLayer);
         return raycast.collider != null;
     }
 
-    IEnumerator BounceDelay()
-    {
-        yield return new WaitForSeconds(0.43f);
-        if (isGrounded())
-        {
-            body.AddForce(new Vector2(body.velocity.x, jumpHeight*10), ForceMode2D.Force);
-            //body.velocity = new Vector2(body.velocity.x, jumpHeight + 10);
-            anim.SetTrigger("jump");
-        }
-    }
-  
+
 }
