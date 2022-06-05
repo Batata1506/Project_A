@@ -15,8 +15,7 @@ public class CameraFollowCharacter : MonoBehaviour
     [SerializeField] private float offSet;
     [SerializeField] private float dampingMultiplier;
     private float yCamera;
-    [SerializeField]private float yVelocity;
-    [SerializeField] private float maxYVelocity;
+    private float yVelocity;
     [SerializeField] private float dampingChange;
 
     private void Start()
@@ -29,7 +28,6 @@ public class CameraFollowCharacter : MonoBehaviour
         float yDamping = 0;
         dampingChange = 0.15f * Mathf.Abs(body.velocity.x + body.velocity.y);
         float damping = (Mathf.Abs(dampingMultiplier - Mathf.Abs((player.position.y + offSet) - player.position.y) - dampingChange) -yDamping)+ 0.5f;
-        print(damping);
 
         if (Mathf.Abs(transform.position.y - offsetPosition) > 0 && Mathf.Abs(transform.position.y - offsetPosition) < 2)
             damping = 0.5f;
