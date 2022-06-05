@@ -2,6 +2,7 @@ using JetBrains.Rider.Unity.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,12 +13,16 @@ public class CoreMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float _maxSpeed = 50f;
     [SerializeField] private float jumpCooldown ;
+    [SerializeField] private float bounceCooldown;
     private CircleCollider2D circleCollider;
     private Rigidbody2D body;
     private Vector2 _move;
     private Animator anim;
     private float Xpos;
     private float coolDown = Mathf.Infinity;
+    private float coolDown2 = Mathf.Infinity;
+    private bool bounce = true;
+    
    
 
  
@@ -30,18 +35,18 @@ public class CoreMovement : MonoBehaviour
         circleCollider = GetComponent<CircleCollider2D>();
         anim = GetComponent<Animator>();
     }
-
-    // Start is called just before any of the Update methods is called the first time
     private void Start()
     {
-
+      
     }
+
     // Update is called every frame, if the MonoBehaviour is enabled
     private void Update()
     {
         Xpos = Input.GetAxis("Horizontal");
         _move = new Vector2(Xpos, 0);
-       
+      
+
         if (Xpos > 0.1f)
         {
             transform.localScale = new Vector3(-0.15f, 0.15f, 0.15f); ;
@@ -51,20 +56,33 @@ public class CoreMovement : MonoBehaviour
             transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
         }
 
+     
+
+
         // Set animator paras 
         anim.SetBool("grounded", isGrounded());
         anim.SetBool("run", body.velocity.x != 0);
+
     }
 
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
     private void FixedUpdate()
     {
+        //StartCoroutine(BounceDelay2());
+        Move();
         if (Input.GetButton("Jump") && coolDown > jumpCooldown)
         {
             Jump();
         }
+        if (coolDown2 > bounceCooldown)
+        {
+            Bounce();
+            coolDown2 = 0;
+        }
+           
+
         coolDown += Time.deltaTime;
-        Move();
+        coolDown2 += Time.deltaTime;
         // jump rotaion 
         if (isGrounded())
         {
@@ -94,14 +112,31 @@ public class CoreMovement : MonoBehaviour
    
     private void Jump()
     {
-      
-        if (isGrounded())
+        if (isGrounded() )
         {
             body.velocity = new Vector2(body.velocity.x, jumpHeight);
             anim.SetTrigger("jump");
-            
         }
         coolDown = 0;
+    }
+
+    private void Bounce()
+    {
+            if (bounce && Input.GetKey(KeyCode.Mouse0) && !isGrounded())
+            {
+             body.AddForce(new Vector2(body.velocity.x, 0), ForceMode2D.Force);
+            //body.velocity = new Vector2(body.velocity.x, body.velocity.y *0);
+                StartCoroutine(BounceDelay());
+                bounce = false;
+
+            }
+
+            else
+            {
+                body.velocity = new Vector2(body.velocity.x, body.velocity.y);
+                bounce = true;
+            }
+
     }
 
     private bool isGrounded()
@@ -110,5 +145,15 @@ public class CoreMovement : MonoBehaviour
         return raycast.collider != null;
     }
 
-   
+    IEnumerator BounceDelay()
+    {
+        yield return new WaitForSeconds(0.43f);
+        if (isGrounded())
+        {
+            body.AddForce(new Vector2(body.velocity.x, jumpHeight*10), ForceMode2D.Force);
+            //body.velocity = new Vector2(body.velocity.x, jumpHeight + 10);
+            anim.SetTrigger("jump");
+        }
+    }
+  
 }
