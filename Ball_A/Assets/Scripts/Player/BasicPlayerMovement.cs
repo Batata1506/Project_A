@@ -22,8 +22,13 @@ public class BasicPlayerMovement : MonoBehaviour
     [Header("Slopes")]
     [SerializeField] private float slopeAngle; // only serialized for debugging
     [SerializeField] private float maxClimableAngle;
+    private float perpendicularToSlope;
+    private bool onSlope;
+    [SerializeField] private float minimumSlopeSpeed;
+    [SerializeField] private float minimumSlopeCatchSpeed;
+    private bool minSlopeSpeedReached;
 
- 
+
 
     // Awake is called when the script instance is being loaded
     private void Awake()
@@ -40,13 +45,27 @@ public class BasicPlayerMovement : MonoBehaviour
 
     }
     // Update is called every frame, if the MonoBehaviour is enabled
+    //Always initialise physics in Update but implement in FixedUpdate
     private void Update()
     {
         Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0)); //For slopes
         Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue); //For slopes
 
         Xpos = Input.GetAxis("Horizontal");
-        _move = new Vector2(Xpos, 0);
+        if(onSlope == false)
+        {
+            _move = new Vector2(Xpos, 0);
+        }
+        else if(onSlope == true && Xpos > 0 && minSlopeSpeedReached == true) //Moving up slopes
+        {
+            _move = new Vector2(Xpos * Mathf.Cos(slopeAngle * Mathf.Deg2Rad), Mathf.Sin(slopeAngle * Mathf.Deg2Rad));
+        }
+        else if (onSlope == true && Xpos < 0) //Moving down slopes
+        {
+            _move = new Vector2(Xpos * Mathf.Cos(slopeAngle * Mathf.Deg2Rad), -Mathf.Sin(slopeAngle * Mathf.Deg2Rad));
+        }
+
+
         if (Xpos > 0.1f)
         {
             transform.localScale = new Vector3(-0.15f, 0.15f, 0.15f); ;
@@ -58,15 +77,24 @@ public class BasicPlayerMovement : MonoBehaviour
 
         // Set animator paras 
         anim.SetBool("grounded", isGrounded());
+        anim.SetBool("grounded", onSlope == true);
         anim.SetBool("run", body.velocity.x != 0);
 
         //Slopes
         CalculateSlopeAngle();
+
+        if (body.velocity.x > minimumSlopeSpeed && (isGrounded() || onSlope))
+            minSlopeSpeedReached = true;
+        else if(isGrounded() == false || onSlope == false)
+        {
+            minSlopeSpeedReached = false;
+        }
     }
 
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
     private void FixedUpdate()
     {
+        
         Move();
 
         coolDown += Time.deltaTime;
@@ -90,30 +118,68 @@ public class BasicPlayerMovement : MonoBehaviour
         }
     }
 
-    private void MovingOnSlope()
-    {
-
-    }
-
     private void Move()
     {
-         body.AddForce(_move*movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
-        if(Mathf.Abs(body.velocity.x) > _maxSpeed)
+        //print(body.velocity.x + body.velocity.y);
+        body.AddForce(_move*movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
+        if (onSlope == true && body.velocity.x + body.velocity.y > minimumSlopeCatchSpeed && Input.GetAxis("Horizontal") != 0)
+        {
+            body.AddForce(_move * movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
+        }
+        if(Mathf.Abs(body.velocity.x) > _maxSpeed && isGrounded())
         {
             //Player caps at max speed
-            body.velocity = new Vector2(Mathf.Sign(body.velocity.x * _maxSpeed), body.velocity.y);
+            //body.velocity = new Vector2(Mathf.Sign(body.velocity.x * _maxSpeed) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad), body.velocity.y * Mathf.Sin(slopeAngle * Mathf.Deg2Rad));
+            movementSpeed -= 0.05f;
         }
        
     }
    
     private void Jump()
-    {
-      
-        if (isGrounded())
+    {   //FOR 45degrees+ slopes
+        if(slopeAngle >= 45)
+        {
+            if (onSlope == true && slopeAngle != 90 && body.velocity.x > movementSpeed * 0.25f)
+            {
+                body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * -(body.velocity.x * 1.5f), jumpHeight);
+                anim.SetTrigger("jump");
+
+            }
+            else if (onSlope == true && slopeAngle != 90 && body.velocity.x <= 0)
+            {
+                body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 1.5f), jumpHeight);
+                anim.SetTrigger("jump");
+            }
+            else if (onSlope == true && slopeAngle != 90)
+            {
+                body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * -1f, jumpHeight);
+                anim.SetTrigger("jump");
+            }
+        }
+        if (slopeAngle < 45)
+        {
+            if (onSlope == true && slopeAngle != 90 && body.velocity.x > movementSpeed * 0.25f)
+            {
+                body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 3f), jumpHeight * Mathf.Abs(body.velocity.x * 0.1f));
+                anim.SetTrigger("jump");
+            }
+            else if (onSlope == true && slopeAngle != 90 && body.velocity.y <= 0)
+            {
+                body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 4f), jumpHeight);
+                anim.SetTrigger("jump");
+            }
+            else if (onSlope == true && slopeAngle != 90)
+            {
+                body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * -1f, jumpHeight);
+                anim.SetTrigger("jump");
+            }
+        }
+
+        else if (isGrounded())
         {
             body.velocity = new Vector2(body.velocity.x, jumpHeight);
             anim.SetTrigger("jump");
-            
+
         }
         coolDown = 0;
     }
@@ -133,11 +199,11 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
             //print(slopeAngle);
-            //bool onSlope = true;
+            onSlope = true;
         }
-       // else
-        //{
-          //  onSlope = false;
-        //}
+        else
+        {
+            onSlope = false;
+        }
     }
 }
