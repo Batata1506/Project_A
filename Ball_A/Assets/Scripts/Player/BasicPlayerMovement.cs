@@ -184,7 +184,7 @@ public class BasicPlayerMovement : MonoBehaviour
         coolDown = 0;
     }
 
-    private bool isGrounded()
+    public bool isGrounded()
     {
         RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center,circleCollider.bounds.size,0,Vector2.down,0.03f, groundLayer);
  
