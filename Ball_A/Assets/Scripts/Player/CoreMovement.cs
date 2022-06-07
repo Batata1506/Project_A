@@ -14,14 +14,14 @@ public class CoreMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float _maxSpeed = 50f;
     [SerializeField] private float jumpCooldown ;
-    [SerializeField] private float bounceCooldown;
+    [SerializeField] public float bounceCooldown;
     public CircleCollider2D circleCollider;
     public Rigidbody2D body;
-    public Vector2 _move;
+    private Vector2 _move;
     public Animator anim;
     private float Xpos;
     private float coolDown = Mathf.Infinity;
-    public BounceAbility bounceAbility;
+    private BounceAbility bounceAbility;
     
 
     
@@ -74,9 +74,14 @@ public class CoreMovement : MonoBehaviour
         {
             Jump();
         }
-        bounceAbility.Bounce();
+        if ( bounceAbility.coolDownB > bounceCooldown)
+        {
+            bounceAbility.Bounce();
+        }
 
-        coolDown += Time.deltaTime;
+
+        coolDown += Time.fixedDeltaTime;
+        bounceAbility.coolDownB += Time.fixedDeltaTime;
  
         // jump rotaion 
         if (isGrounded())
@@ -96,11 +101,11 @@ public class CoreMovement : MonoBehaviour
 
     private void Move()
     {
-         body.AddForce(_move*movementSpeed*Time.deltaTime, ForceMode2D.Impulse);
+         body.AddForce(_move*movementSpeed*Time.fixedDeltaTime, ForceMode2D.Impulse);
         if(Mathf.Abs(body.velocity.x) > _maxSpeed)
         {
             //Player caps at max speed
-            body.velocity = new Vector2(Mathf.Sign(body.velocity.x * _maxSpeed), body.velocity.y);
+            body.velocity = new Vector2(Mathf.Sign(Xpos * _maxSpeed), body.velocity.y);
         }
        
     }

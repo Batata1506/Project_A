@@ -288,12 +288,10 @@ MonoBehaviour:
     m_Bits: 64
   _maxSpeed: 50
   jumpCooldown: 0.5
-  bounceCooldown: 0
+  bounceCooldown: 0.25
   circleCollider: {fileID: 0}
   body: {fileID: 0}
-  _move: {x: 0, y: 0}
   anim: {fileID: 0}
-  bounceAbility: {fileID: 0}
 --- !u!1 &99875215
 GameObject:
   m_ObjectHideFlags: 0
@@ -773,6 +771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b0cafaddf6f2f448bead8f890aba49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coolDownB: Infinity
 --- !u!1 &1041657804
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,14 +909,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502811989}
-  m_LocalRotation: {x: -0, y: -0, z: -0.058235794, w: 0.99830294}
-  m_LocalPosition: {x: -27.13, y: -8.16, z: -0.03558485}
+  m_LocalRotation: {x: -0, y: -0, z: 0.38633236, w: -0.9223597}
+  m_LocalPosition: {x: -3.21, y: -7.29, z: -0.03558485}
   m_LocalScale: {x: 6.0877743, y: 5.40455, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1041657805}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -6.677}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45.453}
 --- !u!1 &1899270803
 GameObject:
   m_ObjectHideFlags: 0
