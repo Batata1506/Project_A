@@ -20,13 +20,13 @@ public class BasicPlayerMovement : MonoBehaviour
     private float coolDown = Mathf.Infinity;
 
     [Header("Slopes")]
-    [SerializeField] private float slopeAngle; // only serialized for debugging
+    [SerializeField] public float slopeAngle; // only serialized for debugging
     [SerializeField] private float maxClimableAngle;
-    private float perpendicularToSlope;
-    private bool onSlope;
+    public bool onSlope;
     [SerializeField] private float minimumSlopeSpeed;
     [SerializeField] private float minimumSlopeCatchSpeed;
     private bool minSlopeSpeedReached;
+    private float slopeJumpFix; //When player holds jump on slope < 45 angle and is moving then they can get extreme heights(bunny hop) //Also works for >=45 degree angles(running and jumping + holding space on them)
 
 
 
@@ -76,16 +76,16 @@ public class BasicPlayerMovement : MonoBehaviour
         }
 
         // Set animator paras 
-        anim.SetBool("grounded", isGrounded());
+        anim.SetBool("grounded", IsGrounded());
         anim.SetBool("grounded", onSlope == true);
         anim.SetBool("run", body.velocity.x != 0);
 
         //Slopes
         CalculateSlopeAngle();
 
-        if (body.velocity.x > minimumSlopeSpeed && (isGrounded() || onSlope))
+        if (body.velocity.x > minimumSlopeSpeed && (IsGrounded() || onSlope))
             minSlopeSpeedReached = true;
-        else if(isGrounded() == false || onSlope == false)
+        else if(IsGrounded() == false || onSlope == false)
         {
             minSlopeSpeedReached = false;
         }
@@ -98,14 +98,14 @@ public class BasicPlayerMovement : MonoBehaviour
         Move();
 
         coolDown += Time.deltaTime;
-        if (Input.GetKey(KeyCode.Space) && coolDown > jumpCooldown)
+        if (Input.GetKey(KeyCode.Space))
         {
             Jump();
         }
 
 
         // jump rotaion 
-        if (!isGrounded()) // || onSlope = false
+        if (!IsGrounded()) // || onSlope = false
         {
             body.rotation = 0;
             body.freezeRotation = true;
@@ -126,7 +126,7 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             body.AddForce(_move * movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
         }
-        if(Mathf.Abs(body.velocity.x) > _maxSpeed && isGrounded())
+        if(Mathf.Abs(body.velocity.x) > _maxSpeed && IsGrounded())
         {
             //Player caps at max speed
             //body.velocity = new Vector2(Mathf.Sign(body.velocity.x * _maxSpeed) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad), body.velocity.y * Mathf.Sin(slopeAngle * Mathf.Deg2Rad));
@@ -139,7 +139,7 @@ public class BasicPlayerMovement : MonoBehaviour
     {   //FOR 45degrees+ slopes
         if(slopeAngle >= 45)
         {
-            if (onSlope == true && slopeAngle != 90 && body.velocity.x > movementSpeed * 0.25f)
+            if (onSlope == true && slopeAngle != 90 && body.velocity.x > movementSpeed * 0.25f && slopeJumpFix > 1)
             {
                 body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * -(body.velocity.x * 1.5f), jumpHeight);
                 anim.SetTrigger("jump");
@@ -156,9 +156,9 @@ public class BasicPlayerMovement : MonoBehaviour
                 anim.SetTrigger("jump");
             }
         }
-        if (slopeAngle < 45)
+        if (slopeAngle < 45 && onSlope == true)
         {
-            if (onSlope == true && slopeAngle != 90 && body.velocity.x > movementSpeed * 0.25f)
+            if (onSlope == true && slopeAngle != 90 && body.velocity.x > movementSpeed * 0.25f && slopeJumpFix > 0.5)
             {
                 body.velocity = new Vector2(Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 3f), jumpHeight * Mathf.Abs(body.velocity.x * 0.1f));
                 anim.SetTrigger("jump");
@@ -175,7 +175,7 @@ public class BasicPlayerMovement : MonoBehaviour
             }
         }
 
-        else if (isGrounded())
+        else if (IsGrounded() && onSlope == false)
         {
             body.velocity = new Vector2(body.velocity.x, jumpHeight);
             anim.SetTrigger("jump");
@@ -184,10 +184,10 @@ public class BasicPlayerMovement : MonoBehaviour
         coolDown = 0;
     }
 
-    public bool isGrounded()
+    public bool IsGrounded()
     {
         RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center,circleCollider.bounds.size,0,Vector2.down,0.03f, groundLayer);
- 
+
         return raycast.collider != null;
     }
 
@@ -200,9 +200,11 @@ public class BasicPlayerMovement : MonoBehaviour
             slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
             //print(slopeAngle);
             onSlope = true;
+            slopeJumpFix += Time.deltaTime;
         }
         else
         {
+            slopeJumpFix = 0;
             onSlope = false;
         }
     }

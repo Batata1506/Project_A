@@ -55,7 +55,7 @@ public class PlayerDash : MonoBehaviour
 
     private void Dash()
     {
-        if (Input.GetKeyDown("e") && coreMoveScript.isGrounded() && CD == 0)
+        if (Input.GetKeyDown("e") && coreMoveScript.IsGrounded() && CD == 0)
         {
             initialLocalScale = body.transform.localScale.x;
             inDashMode = true;
