@@ -59,7 +59,7 @@ public class CameraFollowCharacter : MonoBehaviour
 
 
         //Same as above except when not on slope
-        if (transform.position.y - offsetPosition > 4f && Mathf.Abs(body.velocity.y) > 23 && Mathf.Abs(body.velocity.x) < 20 && coreMove.onSlope == false || Mathf.Abs(transform.position.y - offsetPosition) > 6f)
+        if (transform.position.y - offsetPosition > 4f && Mathf.Abs(body.velocity.y) > 23 && Mathf.Abs(body.velocity.x) < 20 && coreMove.onSlope == false || Mathf.Abs(transform.position.y - offsetPosition) > 8f)
         {
             damping = 0.1f;
             if (body.velocity.y < -0.5 && transform.position.y - offsetPosition > 4)

@@ -22,7 +22,7 @@ public class PlayerDash : MonoBehaviour
     private void Update()
     {
        // print(CD);
-        if (CD > 10)
+        if (CD > 5) //COOLDOWN
             CD = 0;
 
         if(CD != 0)
@@ -34,10 +34,10 @@ public class PlayerDash : MonoBehaviour
         {
             body.transform.localScale = new Vector3(initialLocalScale, body.transform.localScale.y, body.transform.localScale.z);
         }
-        if (Mathf.Abs(rotationSpeed) >= 500)
-        {
-            rotationSpeed = 500;
-        }
+        //if (Mathf.Abs(rotationSpeed) >= 500)
+        //{
+           // rotationSpeed = 500;
+        //}
         Dash();
     }
     private void FixedUpdate()
@@ -49,7 +49,11 @@ public class PlayerDash : MonoBehaviour
             body.velocity = new Vector2(0, body.velocity.y);
             rotationSpeed += 0.5f * dashMultiplier * Mathf.Sign(body.transform.localScale.x);
             body.rotation = rotationSpeed;
-            print(rotationSpeed);
+
+            if(dashMultiplier > 200)
+            {
+                dashMultiplier = 200;
+            }
         }
     }
 
