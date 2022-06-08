@@ -44,7 +44,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -116,85 +116,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GroundTilemapV2 stage 1_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 4096
-        width: 2048
-        height: 2048
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 55a74365f56486a42ba5b0d9da17f4e9
-      internalID: 2034520089
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: GroundTilemapV2 stage 1_1
       rect:
         serializedVersion: 2
-        x: 2048
-        y: 4096
-        width: 2048
-        height: 2048
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 505a776bef82ea348ae738464cb6f41d
-      internalID: 1260590875
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GroundTilemapV2 stage 1_2
-      rect:
-        serializedVersion: 2
-        x: 4096
-        y: 4096
-        width: 2048
-        height: 2048
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9a520770d597c904ca2e38687359ef37
-      internalID: 1735926787
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GroundTilemapV2 stage 1_3
-      rect:
-        serializedVersion: 2
         x: 0
-        y: 2048
-        width: 2048
+        y: 4096
+        width: 6144
         height: 2048
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 2044, y: 0, z: 2048, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c3cc6b641ca0aff4888d1caff33140dc
-      internalID: -2063982254
+      spriteID: da984f19ce58d1149be942ed10bfbc82
+      internalID: 1260590875
       vertices: []
       indices: 
       edges: []
@@ -203,40 +140,19 @@ TextureImporter:
       name: GroundTilemapV2 stage 1_4
       rect:
         serializedVersion: 2
-        x: 2048
-        y: 2048
-        width: 2048
-        height: 2048
+        x: 0
+        y: 2042
+        width: 6144
+        height: 2054
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 2048, y: 0, z: 2052, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 96c4b2e5cc2fdc04b8bd07c6b929c055
+      spriteID: 7282e308b77311646bec65f9050c364e
       internalID: 1460023149
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GroundTilemapV2 stage 1_5
-      rect:
-        serializedVersion: 2
-        x: 4096
-        y: 2048
-        width: 2048
-        height: 2048
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ece6ef8c2079f344096d99cf2cd2bcd7
-      internalID: -765231322
       vertices: []
       indices: 
       edges: []
