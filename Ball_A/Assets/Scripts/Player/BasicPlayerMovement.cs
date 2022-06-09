@@ -12,7 +12,7 @@ public class BasicPlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float _maxSpeed = 50f;
     [SerializeField] private float jumpCooldown ;
-    private CircleCollider2D circleCollider;
+    private Collider2D circleCollider;
     private Rigidbody2D body;
     private Vector2 _move;
     private Animator anim;
