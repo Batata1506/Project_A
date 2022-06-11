@@ -48,8 +48,8 @@ public class BasicPlayerMovement : MonoBehaviour
     //Always initialise physics in Update but implement in FixedUpdate
     private void Update()
     {
-        Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0)); //For slopes
-        Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue); //For slopes
+      //  Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0)); //For slopes
+       // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue); //For slopes
 
         Xpos = Input.GetAxis("Horizontal");
         if(onSlope == false)

@@ -10,8 +10,7 @@ public class SlopeDetection : MonoBehaviour
     private BasicPlayerMovement coreScript;
     private Rigidbody2D body;
     private CircleCollider2D circleCollider;
-    private RaycastHit2D[] ray = new RaycastHit2D[6]; 
-    private float[] slopeAngle;
+    [SerializeField] private float slopeAngle;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -22,38 +21,40 @@ public class SlopeDetection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print(OnSlope());
+       
     }
     private void FixedUpdate()
     {
-        Debug.DrawRay(circleCollider.bounds.center - new Vector3(0.25f,0,0), new Vector2(0,-0.5f), Color.red);
-        Debug.DrawRay(circleCollider.bounds.center +new Vector3(0.25f, 0, 0), new Vector2(0, -0.5f), Color.red);
-        Debug.DrawRay(circleCollider.bounds.center - new Vector3(0.6f, 0, 0), new Vector2(0, -0.20f), Color.red);
-        Debug.DrawRay(circleCollider.bounds.center + new Vector3(0.6f, 0, 0), new Vector2(0, -0.20f), Color.red);
-        Debug.DrawRay(circleCollider.bounds.center - new Vector3(0.5f, 0, 0), new Vector2(0, -0.25f), Color.red);
-        Debug.DrawRay(circleCollider.bounds.center + new Vector3(0.5f, 0, 0), new Vector2(0, -0.25f), Color.red);
+        OnSlope();
+        Debug.DrawRay(circleCollider.bounds.center +  new Vector3(0, -0.52f, 0), new Vector3(0.5f, 0, 0), Color.red);
+       // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), new Vector3(-0.5f, -0, 0), Color.blue);
+       // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), new Vector3(0.5f, 0, 0), Color.green);
+       // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), new Vector3(0.5f, 0, 0), Color.white);
+       
     }
 
    private bool OnSlope()
     {
+        RaycastHit2D ray = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), Vector2.right,0.5f, groundLayer);
+        RaycastHit2D ray1 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), Vector2.left,0.5f, groundLayer);
+        RaycastHit2D ray2 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), Vector2.right,0.5f, groundLayer);
+        RaycastHit2D ray3 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), Vector2.left,0.5f, groundLayer);
+
        
-         ray[0] = Physics2D.Raycast(circleCollider.bounds.center - new Vector3(0.25f, 0, 0), Vector2.down, 0.5f, groundLayer);
-         ray[1] = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0.25f, 0, 0), Vector2.down, 0.5f, groundLayer);
-          ray[2] = Physics2D.Raycast(circleCollider.bounds.center - new Vector3(0.5f, 0, 0), Vector2.down, 0.25f, groundLayer);
-        ray[3] = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0.5f, 0, 0), Vector2.down, 0.25f, groundLayer);
-        ray[4] = Physics2D.Raycast(circleCollider.bounds.center - new Vector3(0.6f, 0, 0), Vector2.down, 0.20f, groundLayer);
-         ray[5] = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0.6f, 0, 0), Vector2.down, 0.20f, groundLayer);
-
-        /*
-        for(int i = 0; i < slopeAngle.Length; i++)
+        if(ray.collider != null)
         {
-            slopeAngle[i] = Vector2.Angle(ray[i].normal, Vector2.up);
+            slopeAngle = Vector2.Angle(ray.normal, Vector2.up);
         }
-        */
 
-            for(int i = 0; i < ray.Length; i++)
-            return ray[i].collider != null;
+        if (ray1.collider != null)
+        {
+            slopeAngle = Vector2.Angle(ray1.normal, Vector2.up);
+          
+        }
+      
 
-        return false ; 
+        return ray.collider != null || ray1.collider != null || ray2.collider != null || ray3.collider != null;
+
+
     }
 }
