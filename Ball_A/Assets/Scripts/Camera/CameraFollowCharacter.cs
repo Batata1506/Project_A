@@ -68,15 +68,16 @@ public class CameraFollowCharacter : MonoBehaviour
                 offSet = -1.5f;
             }
         }
-        if (body.velocity.y < -0.5)
+        if (body.velocity.y > -1f && body.velocity.y < 1f)
         {
             if(falling == false)
-            offSet = 0;
+            offSet = 1.24f;
         }
-        else if(falling == false)
-        {
 
-            offSet = 3.41f;
+        if(body.velocity.y > 1f)
+        {
+            damping = 0.3f;
+            offSet = 3;
         }
 
         yCamera = Mathf.SmoothDamp(transform.position.y, offsetPosition, ref yVelocity, damping);
