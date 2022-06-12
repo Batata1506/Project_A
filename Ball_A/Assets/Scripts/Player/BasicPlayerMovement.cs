@@ -43,15 +43,17 @@ public class BasicPlayerMovement : MonoBehaviour
     //Always initialise physics in Update but implement in FixedUpdate
     private void Update()
     {
-      //  Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0)); //For slopes
-       // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue); //For slopes
+        //  Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0)); //For slopes
+        // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue); //For slopes
+
+        JumpLessWhenLetGoOfSpace();
 
         Xpos = Input.GetAxis("Horizontal");
-        if(onSlope == false)
+        if (onSlope == false)
         {
             _move = new Vector2(Xpos, 0);
         }
-        else if(onSlope == true && Xpos > 0 && minSlopeSpeedReached == true) //Moving up slopes
+        else if (onSlope == true && Xpos > 0 && minSlopeSpeedReached == true) //Moving up slopes
         {
             _move = new Vector2(Xpos * Mathf.Cos(slopeAngle * Mathf.Deg2Rad), Mathf.Sin(slopeAngle * Mathf.Deg2Rad));
         }
@@ -80,9 +82,17 @@ public class BasicPlayerMovement : MonoBehaviour
 
         if (body.velocity.x > minimumSlopeSpeed && (IsGrounded() || onSlope))
             minSlopeSpeedReached = true;
-        else if(IsGrounded() == false || onSlope == false)
+        else if (IsGrounded() == false || onSlope == false)
         {
             minSlopeSpeedReached = false;
+        }
+    }
+
+    private void JumpLessWhenLetGoOfSpace()
+    {
+        if (Input.GetKeyUp(KeyCode.Space) && body.velocity.y > 0)
+        {
+            body.velocity = new Vector2(body.velocity.x, body.velocity.y / 1.5f);
         }
     }
 
