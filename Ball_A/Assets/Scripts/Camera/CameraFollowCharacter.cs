@@ -18,22 +18,22 @@ public class CameraFollowCharacter : MonoBehaviour
     private float yCamera;
     private float yVelocity;
     [SerializeField] private float dampingChange;
-    private BasicPlayerMovement coreMove;
+    private SlopeDetection slopeDetect;
 
     private void Start()
     {
         body = player.GetComponent<Rigidbody2D>();
-        coreMove = player.GetComponent<BasicPlayerMovement>();
+        slopeDetect = player.GetComponent<SlopeDetection>();
     }
     private void FixedUpdate()
     {
         float offsetPosition = player.position.y + offSet;
         float yDamping = 0;
-        
-                        //was 0.15f
-            dampingChange = 0.15f * Mathf.Abs(body.velocity.x + body.velocity.y);
 
-        float damping = (Mathf.Abs(dampingMultiplier - Mathf.Abs((player.position.y + offSet) - player.position.y) - dampingChange) -yDamping)+ 0.5f;
+        //was 0.15f
+        dampingChange = 0.15f * Mathf.Abs(body.velocity.x + body.velocity.y);
+
+        float damping = (Mathf.Abs(dampingMultiplier - Mathf.Abs((player.position.y + offSet) - player.position.y) - dampingChange) - yDamping) + 0.5f;
 
         if (Mathf.Abs(transform.position.y - offsetPosition) > 0 && Mathf.Abs(transform.position.y - offsetPosition) < 2)
             damping = 0.5f;
@@ -44,9 +44,9 @@ public class CameraFollowCharacter : MonoBehaviour
         bool falling = false;
 
 
-        if (coreMove.onSlope)
+        if (slopeDetect.OnSlope())
         {
-            if(Mathf.Abs(body.velocity.y) * Mathf.Sin(coreMove.slopeAngle * Mathf.Deg2Rad) > 15)
+            if (Mathf.Abs(body.velocity.y) * Mathf.Sin(slopeDetect.slopeAngle * Mathf.Deg2Rad) > 15)
             {
                 damping = 0.1f;
                 if (body.velocity.y < -0.5 && transform.position.y - offsetPosition > 4)
@@ -59,7 +59,7 @@ public class CameraFollowCharacter : MonoBehaviour
 
 
         //Same as above except when not on slope
-        if (transform.position.y - offsetPosition > 4f && Mathf.Abs(body.velocity.y) > 23 && Mathf.Abs(body.velocity.x) < 20 && coreMove.onSlope == false || Mathf.Abs(transform.position.y - offsetPosition) > 8f)
+        if (transform.position.y - offsetPosition > 4f && Mathf.Abs(body.velocity.y) > 23 && Mathf.Abs(body.velocity.x) < 20 && slopeDetect.OnSlope() == false || Mathf.Abs(transform.position.y - offsetPosition) > 8f)
         {
             damping = 0.1f;
             if (body.velocity.y < -0.5 && transform.position.y - offsetPosition > 4)
@@ -70,11 +70,11 @@ public class CameraFollowCharacter : MonoBehaviour
         }
         if (body.velocity.y > -1f && body.velocity.y < 1f)
         {
-            if(falling == false)
-            offSet = 1.24f;
+            if (falling == false)
+                offSet = 1.24f;
         }
 
-        if(body.velocity.y > 1f)
+        if (body.velocity.y > 1f)
         {
             damping = 0.3f;
             offSet = 3;
@@ -83,10 +83,10 @@ public class CameraFollowCharacter : MonoBehaviour
         yCamera = Mathf.SmoothDamp(transform.position.y, offsetPosition, ref yVelocity, damping);
         cdTimer = 0;
 
-        if(changingDirections)
+        if (changingDirections)
         {
             cdTimer += Time.deltaTime;
-                if(cdTimer > 0)
+            if (cdTimer > 0)
             {
                 transform.position = new Vector3(player.position.x + lookAhead, yCamera, transform.position.z);
                 lookAhead = Mathf.Lerp(lookAhead, (25 * -player.localScale.x), Time.deltaTime * cameraSpeed);
