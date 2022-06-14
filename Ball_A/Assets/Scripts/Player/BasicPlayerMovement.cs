@@ -78,7 +78,7 @@ public class BasicPlayerMovement : MonoBehaviour
         //Goes down slope when not meeting requirements
         if(body.velocity.x < minimumSlopeSpeed/2 && slopeDetect.OnSlope() && body.velocity.y < 20)
         {
-            body.velocity -= new Vector2(0.1f, 0.1f);
+            body.velocity += new Vector2(0, -0.1f);
         }
     }
 
@@ -176,7 +176,7 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && Mathf.Abs(body.velocity.x) > Mathf.Abs(movementSpeed) * 0.25f && slopeJumpFix > 1)
             {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * -(body.velocity.x * 1.5f), jumpHeight);
+                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 0.7f), jumpHeight * -(body.velocity.x * 0.5f));
                 anim.SetTrigger("jump");
 
             }
@@ -187,7 +187,7 @@ public class BasicPlayerMovement : MonoBehaviour
             }
             else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90)
             {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * -1f, jumpHeight);
+                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * -8, jumpHeight); //WAS 1f      
                 anim.SetTrigger("jump");
             }
         }
@@ -195,7 +195,7 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && Mathf.Abs(body.velocity.x) > Mathf.Abs(movementSpeed) * 0.25f && slopeJumpFix > 0.5)
             {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 3f), jumpHeight * Mathf.Abs(body.velocity.x * 0.1f));
+                body.velocity = new Vector2(body.velocity.x, jumpHeight * (Mathf.Abs(body.velocity.x * 0.08f) + (body.velocity.y)));
                 anim.SetTrigger("jump");
             }
             else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && body.velocity.y <= 0)
