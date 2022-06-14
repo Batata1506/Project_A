@@ -47,14 +47,14 @@ public class SlopeDetection : MonoBehaviour
         if(ray.collider != null)
         {
             slopeAngle = Vector2.Angle(ray.normal, Vector2.up);
-            if(body.velocity.y < 0)
+            if(body.velocity.y < 0 && (coreScript.IsGrounded() == false || coreScript.enteringSlope))
                 body.AddForce(ray.normal * -2 * body.gravityScale);
         }
 
         if (ray1.collider != null)
         {
             slopeAngle = Vector2.Angle(ray1.normal, Vector2.up);
-            if (body.velocity.y < 0)
+            if (body.velocity.y < 0 && (coreScript.IsGrounded() == false || coreScript.enteringSlope))
                 body.AddForce(ray1.normal * -2 * body.gravityScale);
         }
 

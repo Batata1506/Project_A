@@ -21,7 +21,7 @@ public class BasicPlayerMovement : MonoBehaviour
     private bool minSlopeSpeedReached;
     private float slopeJumpFix; //When player holds jump on slope < 45 angle and is moving then they can get extreme heights(bunny hop) //Also works for >=45 degree angles(running and jumping + holding space on them)
     private SlopeDetection slopeDetect;
-    public bool enteringSlope;
+    public bool enteringSlope; //Same as onSlope tbh says when entering slope or on slope
 
     // Awake is called when the script instance is being loaded
     private void Awake()
@@ -172,44 +172,25 @@ public class BasicPlayerMovement : MonoBehaviour
    
     private void Jump()
     {   //FOR 45degrees+ slopes
-        if(slopeDetect.slopeAngle >= 45)
+        if(slopeDetect.slopeAngle >= 54 && slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90) //Over 55 degree slopes
         {
-            if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && Mathf.Abs(body.velocity.x) > Mathf.Abs(movementSpeed) * 0.25f && slopeJumpFix > 1)
+           if (body.velocity.y >= 8 && slopeJumpFix > 0.05f)
+            body.velocity = new Vector2((body.velocity.x * 1.5f) * -Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) - 3f, jumpHeight); //Going up slopes and moving at fast speed
+            
+           else if(body.velocity.y >= 0 && body.velocity.y < 8)
             {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 0.7f), jumpHeight * -(body.velocity.x * 0.5f));
-                anim.SetTrigger("jump");
-
+                body.velocity = new Vector2(4 * -Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) - 3f, jumpHeight); //Going up slowly
             }
-            else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && body.velocity.y <= 0)
+           else if(body.velocity.y < 0) //going down
             {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 1.5f), jumpHeight);
-                anim.SetTrigger("jump");
-            }
-            else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90)
-            {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * -8, jumpHeight); //WAS 1f      
-                anim.SetTrigger("jump");
+                body.velocity = new Vector2((body.velocity.x) * -Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * 0.8f, jumpHeight);
             }
         }
-        if (slopeDetect.slopeAngle < 45 && slopeDetect.OnSlope() == true)
+        else if(slopeDetect.slopeAngle < 54 && enteringSlope == true && slopeDetect.slopeAngle != 90)
         {
-            if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && Mathf.Abs(body.velocity.x) > Mathf.Abs(movementSpeed) * 0.25f && slopeJumpFix > 0.5)
-            {
-                body.velocity = new Vector2(body.velocity.x, jumpHeight * (Mathf.Abs(body.velocity.x * 0.08f) + (body.velocity.y)));
-                anim.SetTrigger("jump");
-            }
-            else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && body.velocity.y <= 0)
-            {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 4f), jumpHeight);
-                anim.SetTrigger("jump");
-            }
-            else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90)
-            {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * -1f, jumpHeight);
-                anim.SetTrigger("jump");
-            }
+            if (body.velocity.y >= 0 && slopeJumpFix > 0.1f)
+                body.velocity = new Vector2(body.velocity.x, jumpHeight + (body.velocity.x * -Mathf.Tan(slopeDetect.slopeAngle) * 0.2f)); ;
         }
-
         else if (IsGrounded() && slopeDetect.OnSlope() == false)
         {
             body.velocity = new Vector2(body.velocity.x, jumpHeight);
@@ -250,7 +231,7 @@ public class BasicPlayerMovement : MonoBehaviour
 
     private bool JumpRotationFreeze()
     {
-        RaycastHit2D boxcast = Physics2D.BoxCast(circleCollider.bounds.center, circleCollider.bounds.size, 0, Vector2.down, 0.01f, groundLayer);
+        RaycastHit2D boxcast = Physics2D.BoxCast(circleCollider.bounds.center, circleCollider.bounds.size + new Vector3(0.1f, 0.1f, 0), 0, Vector2.down, 0.01f, groundLayer);
         return boxcast.collider == null;
     }
     /*
