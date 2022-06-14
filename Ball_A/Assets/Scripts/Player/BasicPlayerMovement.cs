@@ -16,13 +16,12 @@ public class BasicPlayerMovement : MonoBehaviour
 
     [Header("Slopes")]
     [SerializeField] public float slopeAngle; // only serialized for debugging
-    [SerializeField] private float maxClimableAngle;
-
     [SerializeField] private float minimumSlopeSpeed;
     [SerializeField] private float minimumSlopeCatchSpeed;
     private bool minSlopeSpeedReached;
     private float slopeJumpFix; //When player holds jump on slope < 45 angle and is moving then they can get extreme heights(bunny hop) //Also works for >=45 degree angles(running and jumping + holding space on them)
     private SlopeDetection slopeDetect;
+    public bool enteringSlope;
 
     // Awake is called when the script instance is being loaded
     private void Awake()
@@ -42,15 +41,16 @@ public class BasicPlayerMovement : MonoBehaviour
     //Always initialise physics in Update but implement in FixedUpdate
     private void Update()
     {
-        print(slopeDetect.OnSlope());
         //  Debug.DrawLine(circleCollider.bounds.center +  new Vector3(0, -0.5f, 0), circleCollider.bounds.center + new Vector3(0.35f, -0.5f, 0)); //For slopes
         // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0f, -0.52f, 0), Vector2.right, Color.blue); //For slopes
 
+        Debug.DrawRay(circleCollider.bounds.center + new Vector3(-0.3f, 0, 0), new Vector3(0, -0.56f, 0), Color.gray);
+        Debug.DrawRay(circleCollider.bounds.center + new Vector3(0.3f, 0, 0), new Vector3(0, -0.56f, 0), Color.gray);
         JumpLessWhenLetGoOfSpace();
 
         Xpos = Input.GetAxis("Horizontal");
 
-            _move = new Vector2(Xpos, 0);
+        _move = new Vector2(Xpos, 0);
 
         SlopeCalculationForMovement();
 
@@ -63,13 +63,25 @@ public class BasicPlayerMovement : MonoBehaviour
         //  CalculateSlopeAngle();
         SlopeJumpFix();
 
+        MinSlopeSpeedReached();
+    }
+
+    private void MinSlopeSpeedReached()
+    {
         if (Mathf.Abs(body.velocity.x) > minimumSlopeSpeed && (IsGrounded() || slopeDetect.OnSlope()))
             minSlopeSpeedReached = true;
         else if (IsGrounded() == false || slopeDetect.OnSlope() == false)
         {
             minSlopeSpeedReached = false;
         }
+
+        //Goes down slope when not meeting requirements
+        if(body.velocity.x < minimumSlopeSpeed/2 && slopeDetect.OnSlope() && body.velocity.y < 20)
+        {
+            body.velocity -= new Vector2(0.1f, 0.1f);
+        }
     }
+
     private void SlopeCalculationForMovement()
     {
         if (slopeDetect.OnSlope() == false)
@@ -90,7 +102,6 @@ public class BasicPlayerMovement : MonoBehaviour
         }
         else if (slopeDetect.OnSlope() == true && Xpos < 0 && minSlopeSpeedReached == true && body.velocity.y > 0) //Moving up left slopes
         {
-            print("l");
             _move = new Vector2(Xpos * Mathf.Cos(slopeDetect.slopeAngle * Mathf.Deg2Rad), Mathf.Sin(slopeDetect.slopeAngle * Mathf.Deg2Rad));
         }
 
@@ -116,7 +127,7 @@ public class BasicPlayerMovement : MonoBehaviour
     // This function is called every fixed framerate frame, if the MonoBehaviour is enabled
     private void FixedUpdate()
     {
-        
+
         Move();
 
         coolDown += Time.deltaTime;
@@ -126,8 +137,8 @@ public class BasicPlayerMovement : MonoBehaviour
         }
 
 
-        // jump rotaion 
-        if (!IsGrounded()) // || slopeDetect.OnSlope() = false
+        // jump rotayion 
+        if (JumpRotationFreeze()) // || slopeDetect.OnSlope() = false
         {
             body.rotation = 0;
             body.freezeRotation = true;
@@ -210,12 +221,22 @@ public class BasicPlayerMovement : MonoBehaviour
 
     public bool IsGrounded()
     {
-        RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center,circleCollider.bounds.size,0,Vector2.down,0.03f, groundLayer);
+        RaycastHit2D raycast = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(-0.3f, 0, 0), Vector2.down, 0.56f, groundLayer);
+        RaycastHit2D raycast1 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0.3f, 0, 0), Vector2.down, 0.56f, groundLayer);
 
-        return raycast.collider != null;
+        if (raycast.collider != null && raycast1.collider == null || raycast.collider == null && raycast1.collider != null)
+        {
+            enteringSlope = true; //When entering downward slopes
+        }
+        else
+        {
+            enteringSlope = false;
+        }
+
+        return raycast.collider != null || raycast1.collider != null;
     }
 
-    private void SlopeJumpFix()
+    private void SlopeJumpFix() //When player holds jump on slope < 45 angle and is moving then they can get extreme heights(bunny hop) //Also works for >=45 degree angles(running and jumping + holding space on them)
     {
         if(slopeDetect.OnSlope())
         {
@@ -225,6 +246,12 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             slopeJumpFix = 0;
         }
+    }
+
+    private bool JumpRotationFreeze()
+    {
+        RaycastHit2D boxcast = Physics2D.BoxCast(circleCollider.bounds.center, circleCollider.bounds.size, 0, Vector2.down, 0.01f, groundLayer);
+        return boxcast.collider == null;
     }
     /*
     private void CalculateSlopeAngle()

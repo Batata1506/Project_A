@@ -11,18 +11,20 @@ public class SlopeDetection : MonoBehaviour
     private Rigidbody2D body;
     private CircleCollider2D circleCollider;
     [SerializeField] public float slopeAngle;
-    [SerializeField] private float minimumSlopeSpeed;
+    [SerializeField] private float maxClimableAngle;
     // Start is called before the first frame update
     private void Awake()
     {
         body = player.GetComponent<Rigidbody2D>();
         circleCollider = player.GetComponent<CircleCollider2D>();
+        coreScript = GetComponent<BasicPlayerMovement>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-       
+        MaxClimableAngle();
+        DecreaseSpeedGoingUp();
     }
     private void FixedUpdate()
     {
@@ -36,47 +38,45 @@ public class SlopeDetection : MonoBehaviour
 
    public bool OnSlope()
     {
-        RaycastHit2D ray = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), Vector2.right,0.5f, groundLayer);
-        RaycastHit2D ray1 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), Vector2.left,0.5f, groundLayer);
-        RaycastHit2D ray2 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), Vector2.right,0.5f, groundLayer);
-        RaycastHit2D ray3 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), Vector2.left,0.5f, groundLayer);
+        RaycastHit2D ray = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), Vector2.right,0.8f, groundLayer);
+        RaycastHit2D ray1 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), Vector2.left,0.8f, groundLayer);
+        RaycastHit2D ray2 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), Vector2.right,0.8f, groundLayer);
+        RaycastHit2D ray3 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), Vector2.left,0.8f, groundLayer);
 
        
         if(ray.collider != null)
         {
             slopeAngle = Vector2.Angle(ray.normal, Vector2.up);
+            if(body.velocity.y < 0)
+                body.AddForce(ray.normal * -2 * body.gravityScale);
         }
 
         if (ray1.collider != null)
         {
-            slopeAngle = Vector2.Angle(ray1.normal, Vector2.up); 
+            slopeAngle = Vector2.Angle(ray1.normal, Vector2.up);
+            if (body.velocity.y < 0)
+                body.AddForce(ray1.normal * -2 * body.gravityScale);
         }
 
-        return ray.collider != null || ray1.collider != null || ray2.collider != null || ray3.collider != null;
+        return ray.collider != null || ray1.collider != null || ray2.collider != null || ray3.collider != null || coreScript.enteringSlope == true;
 
 
     }
-    private void SlopesCalculationWhenMoving()
+
+    private void MaxClimableAngle()
     {
-        if (OnSlope() == true && minSlopeSpeedReached() && body.velocity.y > 0)
+        if(slopeAngle > maxClimableAngle && OnSlope()) 
         {
-            body.velocity = new Vector2(body.velocity.x * Mathf.Cos(slopeAngle * Mathf.Deg2Rad), body.velocity.y * Mathf.Sin(slopeAngle * Mathf.Deg2Rad));
-        }
-
-        if (OnSlope() == true && minSlopeSpeedReached() && body.velocity.y < 0)
-        {
-            body.velocity = new Vector2(body.velocity.x * Mathf.Cos(slopeAngle * Mathf.Deg2Rad), body.velocity.y * -Mathf.Sin(slopeAngle * Mathf.Deg2Rad));
+            body.velocity += new Vector2(0, -0.1f);
         }
     }
 
-    private bool minSlopeSpeedReached()
+    private void DecreaseSpeedGoingUp()
     {
-        if (body.velocity.x > minimumSlopeSpeed && (coreScript.IsGrounded() || OnSlope()))
-            return true;
-        else if (coreScript.IsGrounded() == false || OnSlope() == false)
+        if(OnSlope())
         {
-            return false;
+            body.velocity += new Vector2(0, -0.03f);
         }
-        return false;
     }
+   
 }
