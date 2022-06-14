@@ -180,7 +180,7 @@ public class BasicPlayerMovement : MonoBehaviour
                 anim.SetTrigger("jump");
 
             }
-            else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && body.velocity.x <= 0)
+            else if (slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90 && body.velocity.y <= 0)
             {
                 body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * (body.velocity.x * 1.5f), jumpHeight);
                 anim.SetTrigger("jump");
