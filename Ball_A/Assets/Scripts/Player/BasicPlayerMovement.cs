@@ -175,44 +175,27 @@ public class BasicPlayerMovement : MonoBehaviour
         if(slopeDetect.slopeAngle >= 54 && slopeDetect.OnSlope() == true && slopeDetect.slopeAngle != 90) //Over 55 degree slopes
         {
            if (body.velocity.y >= 8 && slopeJumpFix > 0.05f)
-            {
-                body.velocity = new Vector2((body.velocity.x * 1.5f) * -Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) - 3f, jumpHeight); //Going up slopes and moving at fast speed
-                anim.SetTrigger("jump");
-
-            }
-            else if(body.velocity.y >= 0 && body.velocity.y < 8)
+            body.velocity = new Vector2((body.velocity.x * 1.5f) * -Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) - 3f, jumpHeight); //Going up slopes and moving at fast speed
+            
+           else if(body.velocity.y >= 0 && body.velocity.y < 8)
             {
                 body.velocity = new Vector2(4 * -Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) - 3f, jumpHeight); //Going up slowly
-                anim.SetTrigger("jump");
             }
            else if(body.velocity.y < 0) //going down
             {
                 body.velocity = new Vector2((body.velocity.x) * -Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * 0.8f, jumpHeight);
-                anim.SetTrigger("jump");
             }
         }
         else if(slopeDetect.slopeAngle < 54 && enteringSlope == true && slopeDetect.slopeAngle != 90)
         {
-<<<<<<< Updated upstream
-            if (body.velocity.y >= 0 && slopeJumpFix > 0.5f && Mathf.Abs(body.velocity.x) > Mathf.Abs(movementSpeed) * 0.25f)
-                body.velocity = new Vector2(body.velocity.x, jumpHeight + (body.velocity.x * -Mathf.Tan(slopeDetect.slopeAngle) * 0.2f)); ;
-=======
             if (body.velocity.y >= 0 && slopeJumpFix > 0.1f)
-            {
-                body.velocity = new Vector2(body.velocity.x, jumpHeight * (Mathf.Abs(body.velocity.x) * Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad)));
-                anim.SetTrigger("jump");
-            }
-                
-            else if(body.velocity.y < 0)
-            {
-
-            }
->>>>>>> Stashed changes
+                body.velocity = new Vector2(body.velocity.x, jumpHeight + (body.velocity.x * -Mathf.Tan(slopeDetect.slopeAngle) * 0.2f)); ;
         }
         else if (IsGrounded() && slopeDetect.OnSlope() == false)
         {
             body.velocity = new Vector2(body.velocity.x, jumpHeight);
             anim.SetTrigger("jump");
+
         }
         coolDown = 0;
     }
