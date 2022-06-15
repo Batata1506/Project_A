@@ -180,7 +180,7 @@ public class BasicPlayerMovement : MonoBehaviour
    
     private void Jump()
     {   //Entering slope same as onSlope
-        if (slopeDetect.slopeAngle >= 54 && slopeDetect.OnSlope() == true && slopeDetect.slopeAngle <= 89) //Over 55 degree slopes
+        if (slopeDetect.slopeAngle >= 54 && slopeDetect.OnSlope() == true && slopeDetect.slopeAngle <= 80) //Over 55 degree slopes
         {
             if (body.velocity.y >= 8)
             {
@@ -211,7 +211,7 @@ public class BasicPlayerMovement : MonoBehaviour
                 anim.SetTrigger("jump");
             }
         }
-        else if (slopeDetect.slopeAngle > 89 && slopeDetect.slopeAngle < 100 && slopeDetect.OnSlope() && IsGrounded() == false)
+        else if (slopeDetect.slopeAngle > 80 && slopeDetect.slopeAngle < 100 && slopeDetect.OnSlope() && IsGrounded() == false)
         {
             if(body.velocity.y > 5)
             {
