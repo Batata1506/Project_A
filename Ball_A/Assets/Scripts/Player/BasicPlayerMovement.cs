@@ -48,7 +48,14 @@ public class BasicPlayerMovement : MonoBehaviour
         Debug.DrawRay(circleCollider.bounds.center + new Vector3(0.3f, 0, 0), new Vector3(0, -0.56f, 0), Color.gray);
         JumpLessWhenLetGoOfSpace();
 
-        Xpos = Input.GetAxis("Horizontal");
+        if(slopeDetect.OnLoop())
+        {
+            Xpos = -Input.GetAxis("Horizontal");
+        }
+        else
+        {
+            Xpos = Input.GetAxis("Horizontal");
+        }
 
         _move = new Vector2(Xpos, 0);
 
@@ -84,6 +91,7 @@ public class BasicPlayerMovement : MonoBehaviour
 
     private void SlopeCalculationForMovement()
     {
+
         if (slopeDetect.OnSlope() == false)
         {
             _move = new Vector2(Xpos, 0);
@@ -183,19 +191,36 @@ public class BasicPlayerMovement : MonoBehaviour
             {
                 body.velocity = new Vector2((Mathf.Abs(body.velocity.x + body.velocity.y) * 0.3f) * Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * -0.6f - 3, jumpHeight);
                 anim.SetTrigger("jump");
-                print((Mathf.Abs(body.velocity.x + body.velocity.y) * 0.3f) * Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) * -0.6f - 3);
             }
             else
             {
                 body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) - 30f, jumpHeight); //Going up slowly
-                print("x");
+                anim.SetTrigger("jump");
             }
         }
         else if (slopeDetect.slopeAngle < 54 && slopeDetect.OnSlope() == true)
         {
-            if (slopeJumpFix > 0.1)
+            if (slopeJumpFix > 0.1 && body.velocity.y >= 0)
             {
                 body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) + (body.velocity.x), jumpHeight + Mathf.Abs(body.velocity.x + body.velocity.y) * 0.5f);
+                anim.SetTrigger("jump");
+            }
+            else if (slopeJumpFix > 0.1 && body.velocity.y < 0)
+            {
+                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) + (body.velocity.x * 1.2f), jumpHeight + Mathf.Abs(body.velocity.x + body.velocity.y) * 0.25f);
+                anim.SetTrigger("jump");
+            }
+        }
+        else if (slopeDetect.slopeAngle > 89 && slopeDetect.slopeAngle < 100 && slopeDetect.OnSlope() && IsGrounded() == false)
+        {
+            if(body.velocity.y > 5)
+            {
+                body.velocity = new Vector2(jumpHeight * (Mathf.Sign(body.rotation)) + body.velocity.y * 0.4f + Mathf.Abs(body.velocity.x * 2f), body.velocity.y);
+                anim.SetTrigger("jump");
+            }
+            else if(body.velocity.y < 5) //For efficiency could put this condition in first if statement and * equation by Mathf.Sign(body.velocity.y) but it would be less easy to understand
+            {
+                body.velocity = new Vector2(jumpHeight * -(Mathf.Sign(body.rotation)) + body.velocity.y * 0.4f + Mathf.Abs(body.velocity.x * 2f), body.velocity.y);
                 anim.SetTrigger("jump");
             }
         }
