@@ -194,7 +194,7 @@ public class BasicPlayerMovement : MonoBehaviour
         {
             if (body.velocity.y >= 0 && slopeJumpFix > 0.5 && Mathf.Abs(body.velocity.x) > Mathf.Abs(movementSpeed) * 0.25f)
             {
-                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) + (body.velocity.x), jumpHeight + (body.velocity.x * 0.5f));
+                body.velocity = new Vector2(Mathf.Tan(slopeDetect.slopeAngle * Mathf.Deg2Rad) + (body.velocity.x), jumpHeight + ((body.velocity.x + body.velocity.y) * 0.5f));
                 anim.SetTrigger("jump");
             }
         }
