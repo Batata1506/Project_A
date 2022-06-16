@@ -113,7 +113,6 @@ public class BasicPlayerMovement : MonoBehaviour
             _move = new Vector2(Xpos * Mathf.Cos(slopeDetect.slopeAngle * Mathf.Deg2Rad), Mathf.Sin(slopeDetect.slopeAngle * Mathf.Deg2Rad));
         }
 
-
         if (Xpos > 0.1f)
         {
             transform.localScale = new Vector3(-0.15f, 0.15f, 0.15f); ;

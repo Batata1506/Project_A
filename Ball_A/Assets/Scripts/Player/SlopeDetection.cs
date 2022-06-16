@@ -113,18 +113,20 @@ public class SlopeDetection : MonoBehaviour
 
     private void MaxClimableAngle()
     {
-        if(slopeAngle > maxClimableAngle && OnSlope() && Mathf.Abs(body.velocity.y + body.velocity.x) < 20) 
+        if(slopeAngle > maxClimableAngle && OnSlope() && Mathf.Abs(body.velocity.y) + Mathf.Abs(body.velocity.x) < 20) 
         {
             if(!OnLoop())
             body.velocity += new Vector2(0, -0.1f);
+            print("yes");
         }
     }
 
     private void DecreaseSpeedGoingUp()
     {
-        if(OnSlope() || OnLoop())
+        if(Mathf.Abs(body.velocity.x) + Mathf.Abs(body.velocity.y) < 10 && OnSlope() || OnLoop() && Mathf.Abs(body.velocity.x + body.velocity.y) < 20)
         {
             body.velocity += new Vector2(0, -0.03f);
+            print("true");
         }
     }
    
