@@ -13,6 +13,7 @@ public class SlopeDetection : MonoBehaviour
     [SerializeField] public float slopeAngle;
     [SerializeField] private float maxClimableAngle;
     private float xPos;
+    public bool goingUphill;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -25,11 +26,11 @@ public class SlopeDetection : MonoBehaviour
     private void Update()
     {
         MaxClimableAngle();
-        DecreaseSpeedGoingUp();
     }
     private void FixedUpdate()
     {
         OnSlope();
+        DecreaseSpeedGoingUp();
         Debug.DrawRay(circleCollider.bounds.center +  new Vector3(0, -0.52f, 0), new Vector3(0.8f, 0, 0), Color.red);
        // Debug.DrawRay(circleCollider.bounds.center + new Vector3(0, -0.52f, 0), new Vector3(-0.5f, -0, 0), Color.blue);
         Debug.DrawRay(circleCollider.bounds.center + new Vector3(0, 0.52f, 0), new Vector3(0.8f, 0, 0), Color.green);
@@ -52,6 +53,10 @@ public class SlopeDetection : MonoBehaviour
             slopeAngle = Vector2.Angle(ray.normal, Vector2.up);
             if(body.velocity.y < 0 && (coreScript.IsGrounded() == false || coreScript.enteringSlope))
                 body.AddForce(-2 * body.gravityScale * ray.normal);
+            if (player.localScale.x > 0)
+                goingUphill = false;
+            else
+                goingUphill = true;
         }
 
         if (ray1.collider != null)
@@ -59,6 +64,11 @@ public class SlopeDetection : MonoBehaviour
             slopeAngle = Vector2.Angle(ray1.normal, Vector2.up);
             if (body.velocity.y < 0 && (coreScript.IsGrounded() == false || coreScript.enteringSlope))
                 body.AddForce(-2 * body.gravityScale * ray1.normal);
+            goingUphill = false;
+            if (player.localScale.x > 0)
+                goingUphill = true;
+            else
+                goingUphill = false;
         }
 
         if (ray2.collider != null)

@@ -9,22 +9,6 @@ public class LoopEntry : MonoBehaviour
     [Header("Edge colliders")]
     [SerializeField] private EdgeCollider2D Q1E;
     [SerializeField] private EdgeCollider2D Q2E;
-    [SerializeField] private Transform player;
-    [Header("Player values")]
-    private float currentSpeed; //Players current speed
-    [SerializeField] private float minimumSpeed; //The minimum speed required on loops
-    private Rigidbody2D body;
-
-        private void Start()
-    {
-        body = player.GetComponent<Rigidbody2D>();
-
-    }
-
-    private bool LoopAttachmentCheck()
-    {
-        return minimumSpeed <= currentSpeed;
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -39,10 +23,6 @@ public class LoopEntry : MonoBehaviour
 
             // Here you write the code that allows the character to move
             // in a circle, e.g. via a bezier curve, at the currentSpeed
-        }
-        else
-        {
-            body.isKinematic = false;
         }
     }
 }

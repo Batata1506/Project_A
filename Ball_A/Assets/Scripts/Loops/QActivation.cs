@@ -11,11 +11,29 @@ public class QActivation : MonoBehaviour
     [SerializeField] private EdgeCollider2D Q3;
     [SerializeField] private EdgeCollider2D Q4;
 
+    [Header("SpeedCondition")]
+    [SerializeField] private float minimumSpeed;
+    private Rigidbody2D body;
+    [SerializeField] private Transform player;
+    private SlopeDetection slopeScript;
+
+    private void Start()
+    {
+        body = player.GetComponent<Rigidbody2D>();
+        slopeScript = player.GetComponent<SlopeDetection>();
+    }
+    private bool MinimumSpeedReached()
+    {
+        if (slopeScript.OnLoop())
+            return minimumSpeed <= Mathf.Abs(body.velocity.x + body.velocity.y);
+        else
+            return false;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
             if (collision.gameObject.tag.Equals("Player"))
             {
-                if (Q1.isTrigger == false && Q2.isTrigger == false)
+                if (Q1.isTrigger == false && Q2.isTrigger == false && MinimumSpeedReached())
                 {
                     Q1.isTrigger = true;
                     Q1.gameObject.layer = LayerMask.NameToLayer("Default");
@@ -29,7 +47,7 @@ public class QActivation : MonoBehaviour
                 sprite.sortingLayerName = "Foreground";
             }
 
-                else if (Q3.isTrigger == false && Q4.isTrigger == false)
+                else if (Q3.isTrigger == false && Q4.isTrigger == false && MinimumSpeedReached())
                 {
                     Q1.isTrigger = false;
                     Q1.gameObject.layer = LayerMask.NameToLayer("ground");

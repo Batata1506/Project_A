@@ -12,11 +12,13 @@ public class PlayerDash : MonoBehaviour
     private bool inDashMode;
     private float rotationSpeed = 0;
     private float CD;
+    private SlopeDetection slopeScript;
     private void Awake()
     {
 
         body = GetComponent<Rigidbody2D>();
         coreMoveScript = GetComponent<BasicPlayerMovement>();
+        slopeScript = GetComponent<SlopeDetection>();
     }
 
     private void Update()
@@ -66,9 +68,25 @@ public class PlayerDash : MonoBehaviour
         }
         if (Input.GetKeyUp("e") && inDashMode == true)
         {
-            Vector2 test = new Vector2((dashMultiplier * 0.5f) * -Mathf.Sign(body.transform.localScale.x), body.velocity.y);
+            Vector2 test = new Vector2((dashMultiplier * 0.4f) * -Mathf.Sign(body.transform.localScale.x), body.velocity.y);
             CD += 1;
-            body.AddForce(test, ForceMode2D.Impulse);
+            if (slopeScript.OnSlope() == true && slopeScript.goingUphill && slopeScript.slopeAngle != 90)
+            {
+                body.AddForce(new Vector2((dashMultiplier * 0.4f) * -Mathf.Sign(body.transform.localScale.x) * Mathf.Cos(slopeScript.slopeAngle * Mathf.Deg2Rad), body.velocity.y * Mathf.Sin(slopeScript.slopeAngle * Mathf.Deg2Rad)), ForceMode2D.Impulse);
+            }
+            else if(slopeScript.OnSlope() == true && slopeScript.goingUphill == false && slopeScript.slopeAngle != 90)
+            {
+                body.AddForce(new Vector2((dashMultiplier * 0.4f) * -Mathf.Sign(body.transform.localScale.x) * Mathf.Cos(slopeScript.slopeAngle * Mathf.Deg2Rad), body.velocity.y * -Mathf.Sin(slopeScript.slopeAngle * Mathf.Deg2Rad)), ForceMode2D.Impulse);
+            }
+            else if(slopeScript.OnSlope() == true && slopeScript.slopeAngle == 90)
+            {
+                body.AddForce(new Vector2(body.velocity.x, dashMultiplier * 0.4f * -Mathf.Sign(body.transform.localScale.x)));
+            }
+
+            else
+            {
+                body.AddForce(test, ForceMode2D.Impulse);
+            }
             inDashMode = false;
             print(test);
         }

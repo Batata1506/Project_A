@@ -193,7 +193,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.87307537, y: 8.585228}
+  m_Offset: {x: 0.87307537, y: 10.179146}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -204,7 +204,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.7461503, y: 3.473709}
+  m_Size: {x: 2.7461503, y: 0.28587246}
   m_EdgeRadius: 0
 --- !u!114 &1705870799265984231
 MonoBehaviour:
@@ -223,6 +223,8 @@ MonoBehaviour:
   Q2: {fileID: 1705870800518438569}
   Q3: {fileID: 1705870799883917831}
   Q4: {fileID: 1705870799047627868}
+  minimumSpeed: 0
+  player: {fileID: 0}
 --- !u!1 &1705870799883917829
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,8 +383,6 @@ MonoBehaviour:
   Q4: {fileID: 1705870799047627859}
   Q3E: {fileID: 1705870799883917831}
   Q4E: {fileID: 1705870799047627868}
-  player: {fileID: 0}
-  minimumSpeed: 0
 --- !u!1 &1705870800391935559
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,8 +458,6 @@ MonoBehaviour:
   Q2: {fileID: 1705870800518438568}
   Q1E: {fileID: 1705870799019679804}
   Q2E: {fileID: 1705870800518438569}
-  player: {fileID: 0}
-  minimumSpeed: 0
 --- !u!1 &1705870800518438575
 GameObject:
   m_ObjectHideFlags: 0
