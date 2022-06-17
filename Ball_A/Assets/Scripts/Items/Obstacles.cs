@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Obstacles : MonoBehaviour
@@ -7,25 +5,38 @@ public class Obstacles : MonoBehaviour
     private EdgeCollider2D edgeCollider; // gets the collider of object
     private CircleCollider2D circleCollider; // gets collider of the ball
    [SerializeField] private GameObject player; // gets the player Object
-    private Animator anim; // animates the player
+    private PlayerDeath deathScript;
+    private BoxCollider2D boxCollider;
 
-    public void Death() // method that casue the death 
+    private void Start()
     {
+        deathScript = player.GetComponent<PlayerDeath>();
         edgeCollider = GetComponent<EdgeCollider2D>();
-        anim = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider2D>();
+    }
 
+    public void Update() // method that casue the death 
+    {
         if (IsTouchingBall())
         {
-            anim.SetTrigger("death");
-            anim.SetBool("respawn", true);
+            deathScript.Death();
+
         }
         
-
     }
 
     public bool IsTouchingBall() // method to check that the player is touching an obstacle
     {
-        circleCollider = player.GetComponent<CircleCollider2D>();
-        return circleCollider.IsTouching(edgeCollider);
+        if (edgeCollider != null)
+        {
+            circleCollider = player.GetComponent<CircleCollider2D>();
+            return circleCollider.IsTouching(edgeCollider);
+        }
+        else if (boxCollider != null)
+        {
+            circleCollider = player.GetComponent<CircleCollider2D>();
+            return circleCollider.IsTouching(boxCollider);
+        }
+        else return false;
     }
 }
