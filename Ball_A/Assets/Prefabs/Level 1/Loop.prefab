@@ -223,7 +223,7 @@ MonoBehaviour:
   Q2: {fileID: 1705870800518438569}
   Q3: {fileID: 1705870799883917831}
   Q4: {fileID: 1705870799047627868}
-  minimumSpeed: 0
+  minimumSpeed: 3
   player: {fileID: 0}
 --- !u!1 &1705870799883917829
 GameObject:
