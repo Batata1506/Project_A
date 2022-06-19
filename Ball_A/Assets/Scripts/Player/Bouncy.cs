@@ -16,6 +16,8 @@ public class Bouncy : MonoBehaviour
     private SlopeDetection slopeDetect;
     private float bounceSince;
     public bool isBouncing;
+    private float coolDown;
+    private bool canBounce;
 
     void Awake()
     {
@@ -28,23 +30,18 @@ public class Bouncy : MonoBehaviour
     void FixedUpdate()
     {
         Bounce();
+        DisableBounce();
         print(bounceSince);
 
     }
 
     private void Bounce()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && !moveScript.IsGrounded() && slopeDetect.OnSlope() == false && isBouncing == false)
+        if(Input.GetKeyDown(KeyCode.Space) && !moveScript.IsGrounded() && slopeDetect.OnSlope() == false && isBouncing == false && canBounce == true)
         {
             isBouncing = true;
             rb.velocity = new Vector2(rb.velocity.x, -50);
-
-            /*
-            if (IsAboutToTouchGround())
-            {
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Abs(rb.velocity.y) * 1.5f);
-            }
-            */
+            canBounce = false;
         }
      
         if(isBouncing == true)
@@ -60,6 +57,20 @@ public class Bouncy : MonoBehaviour
             
         }
 
+    }
+
+    private void DisableBounce()
+    {
+        
+        if (moveScript.IsGrounded())
+        {
+            coolDown += Time.deltaTime;
+        }
+        if(coolDown > 0.2f)
+        {
+            canBounce = true;
+            coolDown = 0;
+        }
     }
 
 
