@@ -28,8 +28,8 @@ public class Bouncy : MonoBehaviour
     void FixedUpdate()
     {
         Bounce();
-        
-        
+        print(bounceSince);
+
     }
 
     private void Bounce()
@@ -37,7 +37,7 @@ public class Bouncy : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space) && !moveScript.IsGrounded() && slopeDetect.OnSlope() == false && isBouncing == false)
         {
             isBouncing = true;
-            rb.AddForce(new Vector2(0, -100), ForceMode2D.Impulse);
+            rb.velocity = new Vector2(rb.velocity.x, -50);
 
             /*
             if (IsAboutToTouchGround())
@@ -54,10 +54,10 @@ public class Bouncy : MonoBehaviour
         if ( isBouncing == true && moveScript.IsGrounded())
         {
        
-            rb.velocity = new Vector2(rb.velocity.x, 40);
+            rb.velocity = new Vector2(rb.velocity.x*5f, (bounceSince*50f)+25f);
             bounceSince = 0;
             isBouncing=false;
-            print("working");
+            
         }
 
     }
