@@ -22,6 +22,7 @@ public class CoreMovement : MonoBehaviour
     private float Xpos;
     private float coolDown = Mathf.Infinity;
     private BounceAbility bounceAbility;
+    public bool isJumping; // stops player holding m1
     
 
     
@@ -72,7 +73,8 @@ public class CoreMovement : MonoBehaviour
         Move();
         if (Input.GetButton("Jump") && coolDown > jumpCooldown)
         {
-            Jump();
+            Jump(); 
+            isJumping = true;
         }
         if ( bounceAbility.coolDownB > bounceCooldown)
         {
@@ -116,6 +118,7 @@ public class CoreMovement : MonoBehaviour
         {
             body.velocity = new Vector2(body.velocity.x, jumpHeight);
             anim.SetTrigger("jump");
+            isJumping = true;
         }
         coolDown = 0;
     }
@@ -124,7 +127,9 @@ public class CoreMovement : MonoBehaviour
 
     public  bool isGrounded()
     {
+        
         RaycastHit2D raycast = Physics2D.BoxCast(circleCollider.bounds.center, circleCollider.bounds.size, 0f, Vector2.down, 0.01f, groundLayer);
+
         return raycast.collider != null;
     }
 
