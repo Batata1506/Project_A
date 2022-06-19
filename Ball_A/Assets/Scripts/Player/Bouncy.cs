@@ -17,7 +17,7 @@ public class Bouncy : MonoBehaviour
     private float bounceSince;
     public bool isBouncing;
     private float coolDown;
-    private bool canBounce;
+    public bool canBounce;
 
     void Awake()
     {

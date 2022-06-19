@@ -142,6 +142,13 @@ public class BasicPlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) && bounce.isBouncing == false)
         {
             Jump();
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                if (IsGrounded() || slopeDetect.OnLoop() || slopeDetect.OnSlope())
+                {
+                    bounce.canBounce = true;
+                }
+            }
         }
 
 
