@@ -14,7 +14,7 @@ public class SlopeDetection : MonoBehaviour
     [SerializeField] private float maxClimableAngle;
     private float xPos;
     public bool goingUphill;
-    private bool attachedToSlope;
+    public bool attachedToSlope;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -117,7 +117,7 @@ public class SlopeDetection : MonoBehaviour
     {
         if(slopeAngle > maxClimableAngle && OnSlope() && Mathf.Abs(body.velocity.y) + Mathf.Abs(body.velocity.x) < 20) 
         {
-            if(!OnLoop())
+            if(!OnLoop() && attachedToSlope)
             body.velocity += new Vector2(0, -0.1f);
             print("yes");
         }
@@ -125,7 +125,7 @@ public class SlopeDetection : MonoBehaviour
 
     private void DecreaseSpeedGoingUp()
     {
-        if(Mathf.Abs(body.velocity.x) + Mathf.Abs(body.velocity.y) < 10 && OnSlope() || OnLoop() && Mathf.Abs(body.velocity.x + body.velocity.y) < 20)
+        if(Mathf.Abs(body.velocity.x) + Mathf.Abs(body.velocity.y) < 10 && OnSlope() && attachedToSlope || OnLoop() && Mathf.Abs(body.velocity.x + body.velocity.y) < 20 && attachedToSlope)
         {
             body.velocity += new Vector2(0, -0.03f);
             print("true");

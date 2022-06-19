@@ -209,7 +209,7 @@ public class BasicPlayerMovement : MonoBehaviour
                 anim.SetTrigger("jump");
             }
         }
-        else if (slopeDetect.slopeAngle > 80 && slopeDetect.slopeAngle < 100 && slopeDetect.OnSlope() && IsGrounded() == false)
+        else if (slopeDetect.slopeAngle > 80 && slopeDetect.slopeAngle < 100 && slopeDetect.OnSlope() && IsGrounded() == false && slopeDetect.attachedToSlope)
         {
             if(body.velocity.y > 5)
             {
