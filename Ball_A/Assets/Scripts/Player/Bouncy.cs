@@ -13,25 +13,31 @@ public class Bouncy : MonoBehaviour
 {
    private Rigidbody2D rb;
     private BasicPlayerMovement moveScript;
+    private SlopeDetection slopeDetect;
+    private float bounceSince;
+    public bool isBouncing;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         moveScript = GetComponent<BasicPlayerMovement>();
+        slopeDetect = GetComponent<SlopeDetection>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         Bounce();
+        
+        
     }
 
     private void Bounce()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && !moveScript.IsGrounded())
+        if(Input.GetKeyDown(KeyCode.Space) && !moveScript.IsGrounded() && slopeDetect.OnSlope() == false && isBouncing == false)
         {
-
-            rb.AddForce(new Vector2(0, -rb.velocity.y));
+            isBouncing = true;
+            rb.AddForce(new Vector2(0, -100), ForceMode2D.Impulse);
 
             /*
             if (IsAboutToTouchGround())
@@ -40,8 +46,22 @@ public class Bouncy : MonoBehaviour
             }
             */
         }
+     
+        if(isBouncing == true)
+        {
+            bounceSince += Time.deltaTime;
+        }
+        if ( isBouncing == true && moveScript.IsGrounded())
+        {
+       
+            rb.velocity = new Vector2(rb.velocity.x, 40);
+            bounceSince = 0;
+            isBouncing=false;
+            print("working");
+        }
+
     }
 
-   
+
 
 }

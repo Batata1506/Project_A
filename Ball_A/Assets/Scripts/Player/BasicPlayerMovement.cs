@@ -21,6 +21,7 @@ public class BasicPlayerMovement : MonoBehaviour
     private float slopeJumpFix; //When player holds jump on slope < 45 angle and is moving then they can get extreme heights(bunny hop) //Also works for >=45 degree angles(running and jumping + holding space on them)
     private SlopeDetection slopeDetect;
     public bool enteringSlope; //Same as onSlope tbh says when entering slope or on slope
+    private Bouncy bounce;
 
     // Awake is called when the script instance is being loaded
     private void Awake()
@@ -30,6 +31,7 @@ public class BasicPlayerMovement : MonoBehaviour
         circleCollider = GetComponent<CircleCollider2D>();
         anim = GetComponent<Animator>();
         slopeDetect = GetComponent<SlopeDetection>();
+        bounce = GetComponent<Bouncy>();
     }
 
     // Start is called just before any of the Update methods is called the first time
@@ -137,7 +139,7 @@ public class BasicPlayerMovement : MonoBehaviour
         Move();
 
         coolDown += Time.deltaTime;
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && bounce.isBouncing == false)
         {
             Jump();
         }
