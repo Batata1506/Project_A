@@ -15,7 +15,6 @@ public class BasicPlayerMovement : MonoBehaviour
     private float coolDown = Mathf.Infinity;
 
     [Header("Slopes")]
-    [SerializeField] public float slopeAngle; // only serialized for debugging
     [SerializeField] private float minimumSlopeSpeed;
     [SerializeField] private float minimumSlopeCatchSpeed;
     private bool minSlopeSpeedReached;

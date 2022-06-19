@@ -14,6 +14,7 @@ public class SlopeDetection : MonoBehaviour
     [SerializeField] private float maxClimableAngle;
     private float xPos;
     public bool goingUphill;
+    private bool attachedToSlope;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -26,6 +27,7 @@ public class SlopeDetection : MonoBehaviour
     private void Update()
     {
         MaxClimableAngle();
+        AttachedToSlope();
     }
     private void FixedUpdate()
     {
@@ -51,7 +53,7 @@ public class SlopeDetection : MonoBehaviour
         if (ray.collider != null)
         {
             slopeAngle = Vector2.Angle(ray.normal, Vector2.up);
-            if(body.velocity.y < 0 && (coreScript.IsGrounded() == false || coreScript.enteringSlope))
+            if (attachedToSlope == true)
                 body.AddForce(-2 * body.gravityScale * ray.normal);
             if (player.localScale.x > 0)
                 goingUphill = false;
@@ -62,7 +64,7 @@ public class SlopeDetection : MonoBehaviour
         if (ray1.collider != null)
         {
             slopeAngle = Vector2.Angle(ray1.normal, Vector2.up);
-            if (body.velocity.y < 0 && (coreScript.IsGrounded() == false || coreScript.enteringSlope))
+            if (attachedToSlope)
                 body.AddForce(-2 * body.gravityScale * ray1.normal);
             goingUphill = false;
             if (player.localScale.x > 0)
@@ -74,14 +76,14 @@ public class SlopeDetection : MonoBehaviour
         if (ray2.collider != null)
         {
             slopeAngle = Vector2.Angle(ray1.normal, Vector2.up);
-            if ((coreScript.IsGrounded() == false || coreScript.enteringSlope))
+            if (attachedToSlope)
                 body.AddForce(-Mathf.Abs(body.velocity.x) * ray2.normal);
         }
 
         if (ray3.collider != null)
         {
             slopeAngle = Vector2.Angle(ray1.normal, Vector2.up);
-            if ((coreScript.IsGrounded() == false || coreScript.enteringSlope))
+            if (attachedToSlope)
                 body.AddForce(-Mathf.Abs(body.velocity.x) * ray3.normal);
         }
         return ray.collider != null || ray1.collider != null || ray2.collider != null || ray3.collider != null || coreScript.enteringSlope == true || ray6.collider != null;
@@ -95,15 +97,15 @@ public class SlopeDetection : MonoBehaviour
         RaycastHit2D ray5 = Physics2D.Raycast(circleCollider.bounds.center + new Vector3(-0.3f, 0, 0), Vector2.up, 0.8f, groundLayer);
         RaycastHit2D ray6 = Physics2D.Raycast(circleCollider.bounds.center, Vector2.up, 0.56f, groundLayer);
 
-        if(ray4.collider != null)
+        if(ray4.collider != null && attachedToSlope)
         {
             body.AddForce(1.1f *-Mathf.Abs(body.velocity.x) * ray4.normal);
         }
-        if(ray5.collider != null)
+        if(ray5.collider != null && attachedToSlope)
         {
             body.AddForce(1.1f * -Mathf.Abs(body.velocity.x) * ray5.normal);
         }
-        if (ray6.collider != null && ray5.collider == null && ray4.collider == null)
+        if (ray6.collider != null && ray5.collider == null && ray4.collider == null && attachedToSlope)
         {
             body.AddForce(1.1f * -Mathf.Abs(body.velocity.x) * ray6.normal);
         }
@@ -129,5 +131,16 @@ public class SlopeDetection : MonoBehaviour
             print("true");
         }
     }
-   
+    private void AttachedToSlope()
+    {
+        if (coreScript.enteringSlope == true)
+        {
+            attachedToSlope = true;
+        }
+        else if (attachedToSlope == true && OnSlope() == false && OnLoop() == false)
+        {
+            attachedToSlope = false;
+        }
+    }
+
 }
