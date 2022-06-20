@@ -27,10 +27,14 @@ public class Bouncy : MonoBehaviour
     }
 
     // Update is called once per frame
+
+    private void Update()
+    {
+        DisableBounce();
+    }
     void FixedUpdate()
     {
         Bounce();
-        DisableBounce();
         print(bounceSince);
 
     }
@@ -51,7 +55,7 @@ public class Bouncy : MonoBehaviour
         if ( isBouncing == true && moveScript.IsGrounded())
         {
        
-            rb.velocity = new Vector2(rb.velocity.x*5f, (bounceSince*50f)+25f);
+            rb.velocity = new Vector2(rb.velocity.x*2f, (bounceSince*50f)+25f);
             bounceSince = 0;
             isBouncing=false;
             
@@ -72,6 +76,9 @@ public class Bouncy : MonoBehaviour
             coolDown = 0;
         }
     }
+
+    //DisableBounce enables bounce when the player is on the ground for longer than 0.2f seconds || This is used with the code in the fixed update method of jump in BasicPlayerMovement.
+    //This does not work perfectly.
 
 
 
