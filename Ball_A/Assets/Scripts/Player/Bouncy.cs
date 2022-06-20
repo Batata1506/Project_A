@@ -27,15 +27,11 @@ public class Bouncy : MonoBehaviour
     }
 
     // Update is called once per frame
-
-    private void Update()
-    {
-        DisableBounce();
-    }
     void FixedUpdate()
     {
         Bounce();
         print(bounceSince);
+        DisableBounce();
 
     }
 
