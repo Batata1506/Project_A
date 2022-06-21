@@ -162,7 +162,7 @@ public class BasicPlayerMovement : MonoBehaviour
         else
         {
             body.freezeRotation = false;
-            body.drag = 2;
+            body.drag = 0 + Mathf.Abs(0.1f * body.velocity.x);
         }
     }
 
