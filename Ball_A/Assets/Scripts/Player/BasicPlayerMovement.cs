@@ -72,6 +72,8 @@ public class BasicPlayerMovement : MonoBehaviour
         SlopeJumpFix();
 
         MinSlopeSpeedReached();
+
+        FloatyJump();
     }
 
     private void MinSlopeSpeedReached()
@@ -174,6 +176,14 @@ public class BasicPlayerMovement : MonoBehaviour
     {
         //print(body.velocity.x + body.velocity.y);
         body.AddForce(_move*movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
+        if(Xpos != 0 && body.velocity.x <= 35)
+        {
+            body.AddForce(new Vector2((body.velocity.x * 0.5f), body.velocity.y));
+        }
+        else if (Xpos != 0 && body.velocity.x > 35)
+        {
+            body.AddForce(new Vector2((body.velocity.x * 0.05f), body.velocity.y));
+        }
         if (slopeDetect.OnSlope() == true && Mathf.Abs(body.velocity.x + body.velocity.y) > minimumSlopeCatchSpeed && Input.GetAxis("Horizontal") != 0)
         {
             body.AddForce(_move * movementSpeed * Time.deltaTime, ForceMode2D.Impulse);
@@ -297,4 +307,16 @@ public class BasicPlayerMovement : MonoBehaviour
         }
     }
     */
+
+    private void FloatyJump()
+    {
+        if(body.velocity.y > 0 && !slopeDetect.OnSlope())
+        {
+            body.gravityScale = 4f;
+        }
+        else
+        {
+            body.gravityScale = 5f;
+        }
+    }
 }
