@@ -18,12 +18,14 @@ public class Bouncy : MonoBehaviour
     public bool isBouncing;
     private float coolDown;
     public bool canBounce;
+    private Animator anim;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         moveScript = GetComponent<BasicPlayerMovement>();
         slopeDetect = GetComponent<SlopeDetection>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -39,9 +41,11 @@ public class Bouncy : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space) && !moveScript.IsGrounded() && slopeDetect.OnSlope() == false && isBouncing == false && canBounce == true)
         {
+            
             isBouncing = true;
             rb.velocity = new Vector2(rb.velocity.x, -50);
             canBounce = false;
+            anim.SetBool("bouncing", true);
         }
      
         if(isBouncing == true)
@@ -50,7 +54,8 @@ public class Bouncy : MonoBehaviour
         }
         if ( isBouncing == true && moveScript.IsGrounded())
         {
-       
+
+            anim.SetBool("bouncing", false);       
             rb.velocity = new Vector2(rb.velocity.x*2f, (bounceSince*50f)+25f);
             bounceSince = 0;
             isBouncing=false;
